@@ -1,0 +1,8 @@
+# ~/.config/lazygit/config.yml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+
+os:
+  edit: "hx {{filename}}"
+  editAtLine: "hx +{{line}} {{filename}}"
+  editAtLineAndWait: "hx --wait +{{line}} {{filename}}"
+  openDirInEditor: "hx {{dir}}"

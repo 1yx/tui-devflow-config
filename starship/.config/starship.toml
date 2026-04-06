@@ -1,0 +1,65 @@
+# ~/.config/starship.toml
+"$schema" = 'https://starship.rs/config-schema.json'
+palette = 'one_dark'
+
+[directory]
+style = 'bold cyan'
+format = '[$path]($style) '
+
+# 显示 git 分支和状态
+[git_branch]
+format = "[$symbol$branch(:$remote_branch)]($style) "
+truncation_length = 20
+style = 'bold blue'
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+conflicted = "=${count}"
+untracked = "?${count}"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+style = 'bold yellow'
+
+# 语言环境显示
+[nodejs]
+format = "[$symbol($version)]($style) "
+style = 'bold green'
+
+[python]
+format = "[$symbol($version)(/$virtualenv)]($style) "
+style = 'bold yellow'
+
+[rust]
+format = "[$symbol($version)]($style) "
+style = 'bold red'
+
+# worktree 目录视觉标识
+[directory.substitutions]
+"~/.worktrees" = "🌿 "
+
+[character]
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold red)'
+vimcmd_symbol = '[❮](bold blue)'
+vimcmd_replace_one_symbol = '[❮](bold magenta)'
+vimcmd_replace_symbol = '[❮](bold magenta)'
+vimcmd_visual_symbol = '[❮](bold yellow)'
+
+[palettes.one_dark]
+black = '#282c34'
+white = '#abb2bf'
+red = '#e06c75'
+dark_red = '#be5046'
+green = '#98c379'
+yellow = '#e5c07b'
+dark_yellow = '#d19a66'
+blue = '#61afef'
+magenta = '#c678dd'
+cyan = '#56b6c2'
+gutter_grey = '#4b5263'
+comment_grey = '#5c6370'

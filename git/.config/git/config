@@ -1,0 +1,11 @@
+# ~/.config/git/config
+
+[core]
+    editor = hx
+
+[user]
+    name = TODO
+    email = TODO
+
+[init]
+    defaultBranch = main
