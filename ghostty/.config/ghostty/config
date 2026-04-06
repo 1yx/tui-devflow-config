@@ -1,30 +1,33 @@
 # cmux configuration (via Ghostty config)
 # ~/.config/ghostty/config
 
-# 默认工作目录
+# Default working directory
 working-directory = ~
 
-# 默认 shell
+# Default shell
 command = /opt/homebrew/bin/fish
 
-# 字体设置
+# Send the macOS Option key as Alt
+macos-option-as-alt = true
+
+# Font settings
 font-family = "FiraMono Nerd Font"
 font-style = Regular
 font-size = 13
 
-# 主题
+# Theme
 theme = "One Dark Two"
 
-# 间距调整（iTerm 的 100 = 1.0x 即 0% 增量，120 = 1.2x 即 +20%）
+# Cell spacing adjustments
 adjust-cell-width = 0%
 adjust-cell-height = 20%
 
-# 窗口设置
+# Window settings
 window-padding-x = 6
 window-padding-y = 6
 window-padding-balance = true
 window-decoration = true
 
-# 光标
+# Cursor
 cursor-style = block
 cursor-style-blink = false

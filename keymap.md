@@ -6,6 +6,7 @@ Rule:
 
 - repo config wins over tool defaults
 - read `AGENTS.md` before changing shortcuts
+- in this setup, macOS `Option` is sent as `Alt` via Ghostty
 
 ## Global
 
@@ -17,6 +18,12 @@ Rule:
 | `Ctrl+F` | right |
 | `Ctrl+N` | down / next |
 | `Ctrl+P` | up / previous |
+| `Ctrl+U` | delete to line start |
+| `Ctrl+K` | delete to line end |
+| `Ctrl+W` | delete previous word |
+| `Alt+B` | move backward by word |
+| `Alt+F` | move forward by word |
+| `Alt+D` | delete next word |
 
 ## cmux
 
@@ -58,14 +65,23 @@ Rule:
 
 ## Fish
 
+Defaults still in use:
+
 | Key | Meaning |
 |---|---|
 | `Tab` | complete |
 | `Enter` | execute |
 | `Ctrl+C` | cancel |
 | `Ctrl+D` | exit |
-| `Ctrl+U` | delete to line start |
-| `Up/Down` | history |
+| `Ctrl+B / Ctrl+F` | move left / right |
+
+Repo commands:
+
+| Command | Meaning |
+|---|---|
+| `yy` | open Yazi and cd back to final dir |
+| `e` | open `emacsclient` |
+| `timeout` | `gtimeout` |
 
 
 ## Helix
@@ -82,6 +98,10 @@ Repo custom:
 | `Ctrl+G` | open `lazygit` |
 | `Ctrl+S` | save |
 | `Ctrl+A/E/B/F/N/P` | Emacs-style insert mode movement |
+| `Ctrl+K / Ctrl+U` | delete to line end / start in insert mode |
+| `Ctrl+W` | delete previous word in insert mode |
+| `Alt+B / Alt+F` | previous / next word in insert mode |
+| `Alt+D` | delete next word in insert mode |
 
 Normal mode: movement
 

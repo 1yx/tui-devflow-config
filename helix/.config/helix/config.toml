@@ -39,16 +39,22 @@ auto-signature-help = true
 [editor.whitespace]
 render = "all"
 
-# 自定义键位 - normal mode
+# Custom keybindings - normal mode
 [keys.normal]
 C-g = ":run-shell-command lazygit"
 C-s = ":write"
 
-# 自定义键位 - insert mode (Emacs 风格光标控制)
+# Custom keybindings - insert mode (Emacs-style editing)
 [keys.insert]
-C-a = "goto_line_start"     # 行首
-C-e = "goto_line_end"       # 行尾
-C-b = "move_char_left"      # 左移一字符
-C-f = "move_char_right"     # 右移一字符
-C-n = "move_line_down"      # 下一行
-C-p = "move_line_up"        # 上一行
+C-a = "goto_line_start"
+C-e = "goto_line_end"
+C-b = "move_char_left"
+C-f = "move_char_right"
+C-n = "move_line_down"
+C-p = "move_line_up"
+C-k = "kill_to_line_end"
+C-u = "kill_to_line_start"
+C-w = "delete_word_backward"
+A-b = "move_prev_word_start"
+A-f = "move_next_word_start"
+A-d = "delete_word_forward"
