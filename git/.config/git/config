@@ -4,8 +4,9 @@
     editor = hx
 
 [user]
-    name = TODO
-    email = TODO
+    # Set these before stowing this package.
+    name = YOUR_NAME
+    email = your@email.com
 
 [init]
     defaultBranch = main

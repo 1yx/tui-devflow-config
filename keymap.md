@@ -1,151 +1,322 @@
-# TUI Dev OS Keymap
+# TUI Dev OS CHECKSHEET
 
-这份文档汇总本仓库里已经明确配置，或项目文档里已经明确约定的快捷键与命令入口。
+Single-page shortcut sheet for this repo.
 
-## 全局约定
+Rule:
 
-### Emacs 风格光标控制
+- repo config wins over tool defaults
+- read `AGENTS.md` before changing shortcuts
 
-这套环境统一采用以下光标控制习惯：
+## Global
 
-| 按键 | 作用 |
-|------|------|
-| `Ctrl+A` | 到行首 |
-| `Ctrl+E` | 到行尾 |
-| `Ctrl+B` | 左移一个字符 |
-| `Ctrl+F` | 右移一个字符 |
-| `Ctrl+N` | 下一行 |
-| `Ctrl+P` | 上一行 |
-
-说明：
-
-- Helix insert mode 已显式配置这些键。
-- Fish / claude / cmux / Yazi / LazyGit 没有在本仓库里配置与这组键冲突的映射。
+| Key | Meaning |
+|---|---|
+| `Ctrl+A` | line start |
+| `Ctrl+E` | line end |
+| `Ctrl+B` | left |
+| `Ctrl+F` | right |
+| `Ctrl+N` | down / next |
+| `Ctrl+P` | up / previous |
 
 ## cmux
 
-项目文档里已经明确约定使用以下原生快捷键：
-
-| 按键 | 作用 |
-|------|------|
-| `Cmd+Shift+N` | 新建窗口（Window） |
-| `Cmd+D` | 向右分割 pane |
-| `Cmd+Shift+D` | 向下分割 pane |
-| `Option+Cmd+方向键` | 在 pane 间导航 |
-| `Cmd+T` | 在当前 pane 内新建 surface |
-| `Cmd+[` | 切到前一个 surface |
-| `Cmd+]` | 切到后一个 surface |
-| `Ctrl+1` 到 `Ctrl+9` | 按编号切换 surface |
-| `Cmd+Shift+P` | 打开命令面板 |
+| Key | Meaning |
+|---|---|
+| `Cmd+N` | new workspace |
+| `Cmd+Shift+N` | new window |
+| `Cmd+D` | split right |
+| `Cmd+Shift+D` | split down |
+| `Cmd+T` | new surface/tab |
+| `Cmd+Shift+[` | previous tab |
+| `Cmd+Shift+]` | next tab |
+| `Cmd+1..8` | go to tab |
+| `Cmd+9` | last tab |
+| `Cmd+[` | previous split |
+| `Cmd+]` | next split |
+| `Option+Cmd+Arrows` | move between panes |
+| `Cmd+Ctrl+Arrows` | resize pane |
+| `Cmd+Ctrl+=` | equalize panes |
+| `Cmd+Shift+P` | command palette |
+| `Cmd+W` | close surface |
 
 ## Ghostty
 
-本仓库当前没有自定义 Ghostty 键位映射，使用 Ghostty 默认快捷键。
-
-仓库里与 Ghostty 相关的实际配置：
-
-- 默认 shell 为 `fish`
-- 主题为 `Atom One Dark`
+| Key | Meaning |
+|---|---|
+| `Cmd+,` | open config |
+| `Cmd+Shift+,` | reload config |
+| `Cmd+C` / `Cmd+V` | copy / paste |
+| `Cmd+=` `Cmd+-` `Cmd+0` | font in / out / reset |
+| `Cmd+N` | new window |
+| `Cmd+T` | new tab |
+| `Cmd+W` | close surface |
+| `Cmd+Shift+W` | close window |
+| `Cmd+Enter` | fullscreen |
+| `Cmd+Shift+P` | command palette |
+| `Cmd+F` | search |
+| `Esc` | end search |
 
 ## Fish
 
-### 命令入口
+| Key | Meaning |
+|---|---|
+| `Tab` | complete |
+| `Enter` | execute |
+| `Ctrl+C` | cancel |
+| `Ctrl+D` | exit |
+| `Ctrl+U` | delete to line start |
+| `Up/Down` | history |
 
-| 命令 | 作用 |
-|------|------|
-| `yy` | 启动 Yazi，并在退出后把 shell 切到 Yazi 最后所在目录 |
-
-说明：
-
-- 本仓库没有为 Fish 单独定义额外键盘快捷键。
-- 主要键位习惯沿用 shell 默认行为和全局 Emacs 风格控制。
 
 ## Helix
 
-### Normal Mode
+Start here:
 
-| 按键 | 作用 |
-|------|------|
-| `Ctrl+G` | 运行 `lazygit` |
-| `Ctrl+S` | 保存当前文件 |
+- `hx --tutor`
+- official keymap: https://docs.helix-editor.com/keymap.html
 
-### Insert Mode
+Repo custom:
 
-| 按键 | 作用 |
-|------|------|
-| `Ctrl+A` | 到行首 |
-| `Ctrl+E` | 到行尾 |
-| `Ctrl+B` | 左移一个字符 |
-| `Ctrl+F` | 右移一个字符 |
-| `Ctrl+N` | 下一行 |
-| `Ctrl+P` | 上一行 |
+| Key | Meaning |
+|---|---|
+| `Ctrl+G` | open `lazygit` |
+| `Ctrl+S` | save |
+| `Ctrl+A/E/B/F/N/P` | Emacs-style insert mode movement |
+
+Normal mode: movement
+
+| Key | Meaning |
+|---|---|
+| `h j k l` | left / down / up / right |
+| `w` / `b` / `e` | next word / previous word / word end |
+| `f<char>` | find character |
+| `t<char>` | move to character |
+| `Home` / `End` | line start / line end |
+| `gg` / `ge` | file start / file end |
+| `Ctrl+b` / `Ctrl+f` | page up / page down |
+| `Ctrl+u` / `Ctrl+d` | half page up / down |
+
+Normal mode: editing
+
+| Key | Meaning |
+|---|---|
+| `i` / `a` | insert before / after |
+| `I` / `A` | insert at line start / end |
+| `o` / `O` | open line below / above |
+| `r` | replace with one character |
+| `R` | replace with yanked text |
+| `~` | switch case |
+| `` ` `` / `Alt+\`` | lowercase / uppercase |
+| `d` / `c` | delete / change selection |
+| `Alt+d` / `Alt+c` | delete / change without yanking |
+| `y` | yank selection |
+| `p` / `P` | paste after / before |
+| `>` / `<` | indent / unindent |
+| `=` | format selection |
+| `u` / `U` | undo / redo |
+| `Alt+u` / `Alt+U` | earlier / later history state |
+| `.` | repeat last insert |
+| `Ctrl+a` / `Ctrl+x` | increment / decrement number |
+| `Q` / `q` | record / replay macro |
+
+Normal mode: selections and multicursor
+
+| Key | Meaning |
+|---|---|
+| `v` | select mode |
+| `x` | select current line |
+| `X` / `Alt+x` | grow / shrink to line bounds |
+| `%` | select entire file |
+| `;` | collapse selection to cursor |
+| `Alt+;` | flip cursor and anchor |
+| `Alt+:` | ensure selections are forward |
+| `,` | keep only primary selection |
+| `Alt+,` | remove primary selection |
+| `C` / `Alt+C` | copy selection below / above |
+| `(` / `)` | rotate main selection |
+| `Alt+(` / `Alt+)` | rotate selection contents |
+| `J` / `Alt+J` | join lines / join and select inserted space |
+| `K` / `Alt+K` | keep / remove selections by regex |
+| `Ctrl+c` | toggle comments |
+
+Normal mode: search and commands
+
+| Key | Meaning |
+|---|---|
+| `/` | search |
+| `n` / `N` | next / previous match |
+| `*` | select current word |
+| `:` | command prompt |
+| `Space` | space menu |
+| `Space f` | file picker |
+| `Space b` | buffer picker |
+| `Space /` | global search |
+| `Esc` | back to normal mode / cancel |
+
+Normal mode: goto mode
+
+| Key | Meaning |
+|---|---|
+| `g` | enter goto mode |
+| `g g` | file start |
+| `g e` | file end |
+| `g n` / `g p` | next / previous buffer |
+| `g a` | alternate file |
+| `g m` | last modified file |
+| `g .` | last modification in file |
+| `g j` / `g k` | textual line down / up |
+| `g w` | jump to labeled word |
+
+Normal mode: match mode
+
+| Key | Meaning |
+|---|---|
+| `m` | enter match mode |
+| `m m` | matching bracket |
+| `m s<char>` | surround selection |
+| `m r<from><to>` | replace surround |
+| `m d<char>` | delete surround |
+| `m a<object>` | select around textobject |
+| `m i<object>` | select inside textobject |
+
+Normal mode: tree-sitter and diagnostics
+
+| Key | Meaning |
+|---|---|
+| `Alt+o` / `Alt+Up` | expand to parent syntax node |
+| `Alt+i` / `Alt+Down` | shrink syntax node selection |
+| `Alt+p` / `Alt+Left` | previous sibling |
+| `Alt+n` / `Alt+Right` | next sibling |
+| `Alt+a` | all siblings |
+| `Alt+Shift+Down` | all children |
+| `Alt+b` / `Alt+e` | parent start / end |
+| `[d` / `]d` | previous / next diagnostic |
+
+Insert mode
+
+| Key | Meaning |
+|---|---|
+| `Esc` | back to normal mode |
+| `Ctrl+s` | commit undo checkpoint |
+| `Ctrl+x` | autocomplete |
+| `Ctrl+r` | insert register content |
+| `Ctrl+w` / `Alt+Backspace` | delete previous word |
+| `Alt+d` / `Alt+Delete` | delete next word |
+| `Ctrl+u` / `Ctrl+k` | delete to line start / end |
+| `Ctrl+h` / `Backspace` | delete previous char |
+| `Ctrl+d` / `Delete` | delete next char |
+| `Ctrl+j` / `Enter` | insert newline |
+| `Up/Down/Left/Right` | cursor movement |
+| `PageUp/PageDown` | page up / down |
+| `Home/End` | line start / end |
+
+Select mode
+
+| Key | Meaning |
+|---|---|
+| `v` | enter select mode |
+| normal-mode motions | extend selection instead of moving cursor |
+| `n` / `N` | extend search selections while iterating |
+| `Esc` | back to normal mode |
+
+Picker
+
+| Key | Meaning |
+|---|---|
+| `Tab` / `Down` / `Ctrl+n` | next entry |
+| `Shift+Tab` / `Up` / `Ctrl+p` | previous entry |
+| `PageUp` / `Ctrl+u` | page up |
+| `PageDown` / `Ctrl+d` | page down |
+| `Home` / `End` | first / last entry |
+| `Enter` | open selected |
+| `Alt+Enter` | open in background |
+| `Ctrl+s` | open horizontal split |
+| `Ctrl+v` | open vertical split |
+| `Ctrl+t` | toggle preview |
+| `Esc` / `Ctrl+c` | close picker |
+
+Prompt
+
+| Key | Meaning |
+|---|---|
+| `Esc` / `Ctrl+c` | close prompt |
+| `Ctrl+a` / `Home` | prompt start |
+| `Ctrl+e` / `End` | prompt end |
+| `Ctrl+b` / `Left` | backward char |
+| `Ctrl+f` / `Right` | forward char |
+| `Alt+b` / `Ctrl+Left` | backward word |
+| `Alt+f` / `Ctrl+Right` | forward word |
+| `Ctrl+w` / `Alt+Backspace` | delete previous word |
+| `Alt+d` / `Ctrl+Delete` | delete next word |
+| `Ctrl+u` / `Ctrl+k` | delete to start / end |
+| `Backspace` / `Ctrl+h` | delete previous char |
+| `Delete` / `Ctrl+d` | delete next char |
+| `Ctrl+p` / `Up` | previous history |
+| `Ctrl+n` / `Down` | next history |
+| `Ctrl+r` | insert register |
+| `Tab` / `BackTab` | next / previous completion |
+| `Enter` | accept |
 
 ## Yazi
 
-### 自定义键位
+Repo custom:
 
-| 按键 | 作用 |
-|------|------|
-| `e` | 用 Helix 打开当前选中文件 |
-| `E` | 打开 Helix，但不传当前文件 |
+| Key | Meaning |
+|---|---|
+| `e` | open file in Helix |
+| `E` | open Helix in current dir |
 
-说明：
+Defaults worth remembering:
 
-- 本仓库只显式定义了这两组 Yazi 自定义键位。
-- 其他移动、选择、复制、重命名等操作沿用 Yazi 默认键位。
+| Key | Meaning |
+|---|---|
+| `q` | quit |
+| `F1` or `~` | help |
+| `h j k l` | left / down / up / open |
+| `g / G` | top / bottom |
+| `Space` | select |
+| `Enter` | open |
+| `/` | search |
+| `y x p` | copy / cut / paste |
+| `r` | rename |
+| `c` | create |
+| `d` | delete |
 
 ## LazyGit
 
-本仓库没有重写 LazyGit 键位，使用 LazyGit 默认键位。
+Repo behavior:
 
-项目里与 LazyGit 相关的约定：
+| Key | Meaning |
+|---|---|
+| `e` | open in Helix |
 
-| 按键 | 作用 |
-|------|------|
-| `e` | 用 Helix 打开文件 / diff 文件 |
+Defaults worth remembering:
 
-说明：
+| Key | Meaning |
+|---|---|
+| `q` | back / quit |
+| `?` | help |
+| `Space` | stage |
+| `v` | range select |
+| `a` | whole hunk |
+| `Enter` | open details |
+| `/` | filter |
+| `i` | interactive rebase |
+| `s f d e` | squash / fixup / drop / edit |
+| `Ctrl+J / Ctrl+K` | move rebase entry |
+| `Shift+C / Shift+V` | cherry-pick copy / paste |
+| `Shift+D` | reset menu |
+| `Shift+A` | amend old commit |
+| `z / Shift+Z` | undo / redo |
+| `w` | create worktree |
 
-- 这个行为依赖 LazyGit 默认的 `e` 编辑动作，再由仓库配置把编辑器指定为 Helix。
-- 额外支持按行打开与等待返回，但这些是编辑器命令配置，不是新的键位。
+## Sources
 
-## Claude
-
-本仓库没有为 `claude` 定义额外键位映射，使用 Claude Code 默认交互方式。
-
-项目里与 Claude 相关的约定：
-
-- hooks 会在任务结束或子任务结束时通过 `cmux notify` 发通知。
-
-## Starship
-
-Starship 是 prompt 主题配置，不提供仓库级快捷键。
-
-## Git
-
-本仓库没有定义 Git 快捷键或别名。
-
-## worktrunk
-
-本仓库没有定义 `wt` 的键盘快捷键。
-
-常用命令入口：
-
-| 命令 | 作用 |
-|------|------|
-| `wt switch -c <branch>` | 创建并切换到新 worktree |
-| `wt switch <branch>` | 切换到已有 worktree |
-| `wt remove` | 删除当前 worktree |
-
-## dev CLI
-
-这不是键位，但属于这套环境的常用入口命令：
-
-| 命令 | 作用 |
-|------|------|
-| `dev init` | 初始化项目 workspace 与布局 |
-| `dev wt new <name>` | 创建 worktree + workspace + 布局 |
-| `dev wt finish` | 推送、关闭 workspace、移除 worktree |
-| `dev ai loop` | AI 编码循环 |
-| `dev ai commit` | 生成 commit message 并确认提交 |
-| `dev ai review` | Review 当前分支 |
+- local repo config under `fish/`, `helix/`, `yazi/`, `lazygit/`, `ghostty/`
+- local runtime output from `ghostty +list-keybinds --default` and `fish -c 'bind --preset'`
+- upstream docs:
+  https://fishshell.com/docs/4.0/interactive.html
+  https://docs.helix-editor.com/keymap.html
+  https://yazi-rs.github.io/docs/configuration/keymap
+  https://github.com/jesseduffield/lazygit/blob/master/README.md
+  https://cmux.com/ru/docs/concepts
