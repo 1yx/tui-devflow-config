@@ -1,56 +1,27 @@
-function dev --description 'TUI Dev OS entry command'
+function dev --description 'TUI Dev OS 5-step workflow'
     set -l cmd $argv[1]
     set -l rest $argv[2..]
 
     switch "$cmd"
         case init
             dev-init $rest
-        case spec
-            dev-ai-spec $rest
-        case wt
-            set -l sub $rest[1]
-            set -l subrest $rest[2..]
-            switch "$sub"
-                case new
-                    dev-wt-new $subrest
-                case go
-                    dev-wt-go $subrest
-                case finish
-                    dev-wt-finish $subrest
-                case ''
-                    echo "Usage: dev wt <new|go|finish>"
-                case '*'
-                    echo "Unknown wt subcommand: $sub"
-            end
-        case ai
-            set -l sub $rest[1]
-            set -l subrest $rest[2..]
-            switch "$sub"
-                case spec
-                    dev-ai-spec $subrest
-                case loop
-                    dev-ai-loop $subrest
-                case commit
-                    dev-ai-commit $subrest
-                case review
-                    dev-ai-review $subrest
-                case ''
-                    echo "Usage: dev ai <spec|loop|commit|review>"
-                case '*'
-                    echo "Unknown ai subcommand: $sub"
-            end
+        case specify
+            dev-specify $rest
+        case plan
+            dev-plan $rest
+        case implement
+            dev-implement $rest
+        case archive
+            dev-archive $rest
         case '' help
             echo "Usage: dev <command>"
             echo ""
-            echo "Commands:"
-            echo "  init              Initialize the project (cmux workspace + layout)"
-            echo "  wt new <name>     Create a worktree + workspace"
-            echo "  wt go <name>      Switch to a workspace"
-            echo "  wt finish         Push, close the workspace, and remove the worktree"
-            echo "  ai spec <name>    Create worktree + workspace + spec proposal"
-            echo "  ai loop           Run the AI coding loop"
-            echo "  ai commit         Generate a commit message with AI"
-            echo "  ai review         Review the current branch with AI"
+            echo "5-step spec-driven workflow:"
+            echo "  init              Step 1: Initialize spec tool + 3-pane layout"
+            echo "  specify <name>    Step 2: Create worktree + explore + proposal"
+            echo "  plan              Step 3: Generate plan + tasks + review-doc"
+            echo "  implement         Step 4: Apply changes + review-code + commit"
+            echo "  archive           Step 5: Archive specs + push + close worktree"
         case '*'
             echo "Unknown command: $cmd"
             echo "Run 'dev help' for usage."

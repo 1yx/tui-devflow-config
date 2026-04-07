@@ -178,27 +178,33 @@ Initialize in the project: `specify init <project_name>`. Workflow: `/speckit.sp
  Configuration at `.spe-kit/constitution.md`.
 
 #### Dev Workflow Summary
-The repo provides `dev` Fish functions that drive a spec-driven workflow. The full lifecycle:
+The repo provides a unified 5-step `dev` workflow that maps to both OpenSpec and SpecKit:
 
+| Step | Command | OpenSpec | SpecKit |
+|------|---------|----------|---------|
+| 1. init | `dev init` | `openspec init` | `specify init` |
+| 2. specify | `dev specify <name>` | `/opsx:explore` → `/opsx:propose` | `specify specify` → `clarify` |
+| 3. plan | `dev plan` | (already in propose) → review-doc | `specify plan` → `tasks` → review-doc |
+| 4. implement | `dev implement` | `/opsx:apply` → review-code → commit | `specify implement` → review-code → commit |
+| 5. archive | `dev archive` | `/opsx:archive` → push → close → remove | push → close → remove |
+
+Flow:
 ```
-dev init              ← initialize: cmux workspace + 3-pane layout + spec tool init
-dev wt new <name>     ← create: worktree + workspace + layout
-dev ai spec <name>    ← propose: auto wt switch -c → layout init → openspec propose / speckit.specify
-dev ai loop           ← iterate: cld reviews diff → suggests patch
-dev ai commit         ← commit: generates message → manual confirm → commit
-dev wt finish         ← finish: auto review → push → close workspace → remove worktree
+dev init              ← Step 1: spec tool init + 3-pane layout
+dev specify <name>    ← Step 2: wt new + layout + explore + proposal
+dev plan              ← Step 3: plan + tasks + review-doc + commit
+dev implement         ← Step 4: apply + review-code + commit
+dev archive           ← Step 5: archive + push + close workspace + remove worktree
 ```
 
-**`dev ai spec`** creates a new change end-to-end: worktree + workspace + layout + spec proposal. It auto-detects the user's installed spec tool (OpenSpec or SpecKit).
+Key behaviors:
+- **`dev specify`** creates a worktree (`wt switch -c`) and initializes the 3-pane layout.
+- **`dev plan`** generates technical plan, then runs `review-doc` (AI reviews spec documents) and commits.
+- **`dev implement`** applies changes, then runs `review-code` (AI reviews code diff) and commits.
+- **`dev archive`** pushes to remote, closes the cmux workspace, and removes the worktree (`wt remove`).
+- Commits happen after `review-doc` (step 3) and `review-code` (step 4), but push only happens in `archive` (step 5).
 
-**`dev wt finish`** runs `dev ai review` automatically before pushing. The review uses the user's chosen provider method to scan the branch for bugs, performance issues, and readability problems.
-
-The `dev ai` commands should use the user's chosen provider method:
-- **cld**: `cld <provider> -p "prompt"`
-- **ccr**: `ccr code` (or `ccr start && claude`)
-- **cc-switch**: `cld ccswitch` (routes through cc-switch proxy)
-
-The agent **MUST** advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
+The `dev` commands use `cld` for AI prompts. The agent **MUST** advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
 
 ## Important
 

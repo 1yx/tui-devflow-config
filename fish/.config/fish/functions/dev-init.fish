@@ -1,6 +1,6 @@
 # ~/.config/fish/functions/dev-init.fish
 function dev-init
-    # 1. Initialize spec tool (auto-detect installed tool).
+    # Step 1: Initialize spec tool (auto-detect)
     if command -q openspec
         openspec init --tools claude
     else if command -q specify
@@ -12,8 +12,9 @@ function dev-init
         return 1
     end
 
-    # 2. Initialize the default 3-pane layout in the current workspace.
+    # Initialize 3-pane layout
     dev-layout-init
 
-    echo "Project initialized. Start the tools in each pane, then run dev ai spec <name> for the first change."
+    echo ""
+    echo "Step 1/5 done. Run 'dev specify <name>' to start a change."
 end
