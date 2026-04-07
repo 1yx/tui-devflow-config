@@ -29,37 +29,49 @@ When an AI Agent is invoked to set up this environment, it MUST execute the foll
 - **Current Shell**: Check the current shell (`echo $SHELL`). If it is not `fish`, inspect and record the user's current shell configuration (e.g., `.zshrc`, `.bashrc` aliases, exports, and paths). The agent must then adapt and recreate these configurations in `fish` syntax during the setup.
 
 ### 2. Dependencies Installation
-Install the required toolchain using Homebrew:
+#### Install the required toolchain using Homebrew:
 ```bash
 # Core TUI tools
 brew install stow helix yazi lazygit fish starship
 ```
 
-**Install spec-driven development tool (choose one)**:
+#### Switch to Fish and fix PATH
+After installing fish via Homebrew, the agent **MUST**:
+1. Add fish to `/etc/shells`: `echo (brew --prefix)/bin/fish | sudo tee -a /etc/shells`
+2. Set fish as default shell: `chsh -s (brew --prefix)/bin/fish`
+3. Ensure Homebrew paths are correct in fish. Add to `~/.config/fish/config.fish` (before stow deployment):
+   ```fish
+   # Homebrew
+   /opt/homebrew/bin/brew shellenv | source
+   ```
+   This step is critical because Homebrew-installed tools (helix, yazi, starship, etc.) will not be found in PATH without it.
+
+#### Install spec-driven development tool (choose one)
 The agent **MUST** ask the user which spec tool they prefer:
 
-- **OpenSpec** (requires Node.js):
+- **OpenSpec** (requires Node.js — ask user for npm/pnpm/yarn):
   ```bash
-  npm install -g @fission-ai/openspec@latest
+  <npm|pnpm|yarn> install -g @fission-ai/openspec@latest
   ```
 - **SpecKit** (requires Python/uv):
   ```bash
   uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
   ```
 
-**Install specialized tools**:
+#### Install cmux
 ```bash
-# Install cmux
 brew tap manaflow-ai/cmux
 brew install --cask cmux
 
-# Install worktrunk
+```
+
+#### Install worktrunk
+```
 brew install worktrunk
 wt config shell install
 ```
 
-### 3. Worktree Directory Structure
-The agent MUST actively present the following options to the user and ask for their preference. This project relies on `worktrunk` to manage isolation and parallel workflows:
+After installing worktrunk, the agent **MUST** ask the user to choose a worktree directory structure:
 
 - **Option A: Sibling/Flat (Recommended)**
   Worktrees are created alongside the main repository (e.g., `../tui.feature-auth`).
@@ -73,7 +85,7 @@ The agent MUST actively present the following options to the user and ask for th
 
 The agent MUST configure the user's chosen `path_template` using `wt config set`.
 
-### 4. Stow Deployment
+### 3. Stow Deployment
 - **Pre-check & Backup**: Before symlinking, check if any of the following paths exist as real directories/files (not symlinks):
   ```
   ~/.config/ghostty
@@ -103,10 +115,7 @@ The agent MUST configure the user's chosen `path_template` using `wt config set`
   stow -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
   ```
 
-### 5. Post-setup & Initialization
-
-#### Shell Registration
-Ensure Fish is registered in `/etc/shells`. Prompt the user to set Fish as the default shell: `chsh -s $(which fish)`.
+### 4. Post-setup & Initialization
 
 #### Keymap Regeneration
 The agent MUST regenerate `KEYMAP.md` based on the final merged configurations. During this process, the agent must perform a **collision check** across all tools (e.g., ensuring a Helix shortcut doesn't conflict with a global or cmux shortcut). If conflicts are found, the agent must notify the user and guide them through a resolution.
@@ -206,67 +215,11 @@ Key behaviors:
 
 The `dev` commands use `cld` for AI prompts. The agent **MUST** advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
 
-## Important
-
-Prefer using an agent to inspect and modify this repo.
-
-Reason:
-
-- the repo encodes workflow assumptions across multiple tools
-- one change often affects fish functions, cmux behavior, and docs together
-- agents should read `AGENTS.md` first, then edit the minimal set of files
-
-## Repo Shape
-
-```text
-ghostty/.config/ghostty/config
-fish/.config/fish/config.fish
-fish/.config/fish/functions/
-helix/.config/helix/config.toml
-yazi/.config/yazi/
-lazygit/.config/lazygit/config.yml
-starship/.config/starship.toml
-git/.config/git/config
-worktrunk/.config/worktrunk/config.toml
-claude/.claude/
-AGENTS.md
-```
-
-## Deploy
-
-From repo root:
-
-```bash
-stow -n -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
-stow -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
-```
-
-Restow after edits:
-
-```bash
-stow -R -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
-```
-
-## Requirements
-
-Expected tools:
-
-- `cmux`
-- `ghostty`
-- `fish`
-- `helix`
-- `yazi`
-- `lazygit`
-- `starship`
-- `worktrunk`
-- `jq`
-- `stow`
-
-## Agent Notes
-
-If you are an agent working in this repo:
-
-1. Read `AGENTS.md` first.
-2. Preserve the stow package layout.
-3. Prefer small, coherent edits.
-4. When changing workflow behavior, update the related fish functions and docs together.
+### 5. Launch & Explore
+Setup is complete. The agent **MUST** now guide the user to:
+1. Open the **cmux** app.
+2. `cd` into this project directory.
+3. Start a Claude session inside cmux using `dev *` or `cld *` or `claude`.
+4. Ask Claude about any tool's shortcuts, keybindings, or configuration details (e.g. "show me helix keymap", "what does ⌘D do in cmux", "explain the dev workflow").
+5. Request modifications to fit the user's own preferences — Claude will edit the stow packages and restow as needed.
+6. Before pushing to a remote repository, remind the user to protect sensitive data (API keys, tokens, secrets). Use `git update-index --assume-unchanged <file>` on any file containing real credentials to prevent accidental commits.

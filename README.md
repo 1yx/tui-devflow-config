@@ -41,7 +41,7 @@ Copy this repository URL and send it to your AI Agent (e.g., Claude Code, Gemini
 
 > "Please read AGENTS.md from this repository and follow its specifications to help me install and configure this TUI development environment on my macOS."
 
-## Core Components**
+## Core Components
    - **cmux**: Window and layout management
    - **Claude Code**: Code Agent
    - **OpenSpec**: Specification-driven project management
