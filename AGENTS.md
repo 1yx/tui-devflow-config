@@ -99,12 +99,39 @@ The agent MUST configure the user's chosen `path_template` using `wt config set`
   ```
 
 ### 5. Post-setup & Initialization
-- **Shell Registration**: Ensure Fish is registered in `/etc/shells`. Prompt the user to set Fish as the default shell: `chsh -s $(which fish)`.
-- **Keymap Regeneration**: The agent MUST regenerate `KEYMAP.md` based on the final merged configurations. During this process, the agent must perform a **collision check** across all tools (e.g., ensuring a Helix shortcut doesn't conflict with a global or cmux shortcut). If conflicts are found, the agent must notify the user and guide them through a resolution.
-- **Keymap Reference**: Explicitly remind the user to read the updated `KEYMAP.md`. This file serves as the single-page checksheet for the entire TUI environment (cmux, Helix, Yazi, LazyGit, etc.) and contains all custom overrides.
-- **Smoke Tests**: Run the validation commands (e.g., `hx --health`, `stow --version`, `cmux --help`) to ensure a successful setup.
-- **Git Identity Check**: Check the current global Git configuration (`git config --global user.name` and `git config --global user.email`). If they are still the default placeholder values (e.g., `YOUR_NAME` or `your@email.com`), the agent MUST guide the user to set their actual Git identity.
-- **Dev Workflow Summary**: Explain the custom `dev` Fish functions provided (e.g., `dev init`, `dev wt new`, `dev ai loop`, `dev ai commit`). These functions drive the OpenSpec workflow. The agent MUST advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
+
+#### Shell Registration
+Ensure Fish is registered in `/etc/shells`. Prompt the user to set Fish as the default shell: `chsh -s $(which fish)`.
+
+#### Keymap Regeneration
+The agent MUST regenerate `KEYMAP.md` based on the final merged configurations. During this process, the agent must perform a **collision check** across all tools (e.g., ensuring a Helix shortcut doesn't conflict with a global or cmux shortcut). If conflicts are found, the agent must notify the user and guide them through a resolution.
+
+#### Keymap Reference
+Explicitly remind the user to read the updated `KEYMAP.md`. This file serves as the single-page checksheet for the entire TUI environment (cmux, Helix, Yazi, LazyGit, etc.) and contains all custom overrides.
+
+#### Smoke Tests
+Run the validation commands (e.g., `hx --health`, `stow --version`, `cmux --help`) to ensure a successful setup.
+
+#### Git Identity Setup
+The repo tracks a placeholder template at `git/.config/git/config` (`YOUR_NAME` / `your@email.com`). If these values are still placeholders, the agent **MUST** guide the user through:
+1. Edit `git/.config/git/config` with real name and email
+2. `stow -R -v --target="$HOME" git`
+3. `git update-index --assume-unchanged git/.config/git/config` (prevents personal info from being committed)
+
+#### Claude Code Configuration
+The repo includes fish functions for running Claude Code with different model providers. These are located at `fish/.config/fish/functions/claude-*.fish`. The agent **MUST** prompt the user to:
+1. Edit each `claude-*.fish` file with their own API keys and base URLs
+2. Protect sensitive credentials from being committed:
+```bash
+git update-index --assume-unchanged fish/.config/fish/functions/claude-proxy.fish
+git update-index --assume-unchanged fish/.config/fish/functions/claude-glm.fish
+git update-index --assume-unchanged fish/.config/fish/functions/claude-kimi.fish
+git update-index --assume-unchanged fish/.config/fish/functions/claude-qwen.fish
+git update-index --assume-unchanged fish/.config/fish/functions/claude-minimax.fish
+```
+
+#### Dev Workflow Summary
+Explain the custom `dev` Fish functions provided (e.g., `dev init`, `dev wt new`, `dev ai loop`, `dev ai commit`). These functions drive the OpenSpec workflow. The agent MUST advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
 
 ## Important
 
@@ -145,40 +172,6 @@ Restow after edits:
 
 ```bash
 stow -R -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
-```
-
-## Git Setup
-
-Git identity is resolved through a two-level hierarchy:
-
-1. **Global** — `~/.config/git/config` (managed by the `git` stow package)
-2. **Repo-level** — `.git/config` (overrides global for this repo only)
-
-Repo-level `user.name` can differ from global if you use a different handle per repo.
-
-### Setup instructions
-
-The agent **MUST** prompt the user to set their Git identity before first stow deployment. Edit [git/.config/git/config](git/.config/git/config):
-
-```gitconfig
-[user]
-    name = YOUR_NAME
-    email = your@email.com
-```
-
-Then restow the `git` package:
-
-```bash
-stow -R -v --target="$HOME" git
-git config --global user.name
-git config --global user.email
-```
-
-To set a repo-level override (e.g., a different handle for this repo):
-
-```bash
-git config user.name "YOUR_REPO_HANDLE"
-git config user.email "your@email.com"
 ```
 
 ## Requirements

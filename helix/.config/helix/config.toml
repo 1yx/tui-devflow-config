@@ -11,6 +11,7 @@ idle-timeout = 250
 completion-timeout = 250
 preview-completion-insert = true
 color-modes = true
+soft-wrap.enable = true
 
 [editor.auto-save]
 focus-lost = true
