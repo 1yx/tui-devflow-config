@@ -6,7 +6,7 @@ function dev-ai-commit
         return 1
     end
 
-    set msg (claude -p "Write a conventional commit message for these changes. Output only the message, nothing else:\n$diff")
+    set msg (cld -p "Write a conventional commit message for these changes. Output only the message, nothing else:\n$diff")
 
     # Require manual confirmation before committing.
     echo "Generated commit message:"

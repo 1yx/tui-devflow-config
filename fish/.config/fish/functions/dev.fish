@@ -5,6 +5,8 @@ function dev --description 'TUI Dev OS entry command'
     switch "$cmd"
         case init
             dev-init $rest
+        case spec
+            dev-ai-spec $rest
         case wt
             set -l sub $rest[1]
             set -l subrest $rest[2..]
@@ -24,6 +26,8 @@ function dev --description 'TUI Dev OS entry command'
             set -l sub $rest[1]
             set -l subrest $rest[2..]
             switch "$sub"
+                case spec
+                    dev-ai-spec $subrest
                 case loop
                     dev-ai-loop $subrest
                 case commit
@@ -31,7 +35,7 @@ function dev --description 'TUI Dev OS entry command'
                 case review
                     dev-ai-review $subrest
                 case ''
-                    echo "Usage: dev ai <loop|commit|review>"
+                    echo "Usage: dev ai <spec|loop|commit|review>"
                 case '*'
                     echo "Unknown ai subcommand: $sub"
             end
@@ -43,6 +47,7 @@ function dev --description 'TUI Dev OS entry command'
             echo "  wt new <name>     Create a worktree + workspace"
             echo "  wt go <name>      Switch to a workspace"
             echo "  wt finish         Push, close the workspace, and remove the worktree"
+            echo "  ai spec <name>    Create worktree + workspace + spec proposal"
             echo "  ai loop           Run the AI coding loop"
             echo "  ai commit         Generate a commit message with AI"
             echo "  ai review         Review the current branch with AI"

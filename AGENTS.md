@@ -35,12 +35,17 @@ Install the required toolchain using Homebrew:
 brew install stow helix yazi lazygit fish starship
 ```
 
-**Install OpenSpec**:
-OpenSpec requires Node.js. The agent MUST check for a Node.js environment and guide the user to install it if missing. Then, install OpenSpec globally:
-```bash
-npm install -g @fission-ai/openspec@latest
-```
-*Note: If the user prefers a different package manager (e.g., pnpm, yarn), the agent should adapt accordingly.*
+**Install spec-driven development tool (choose one)**:
+The agent **MUST** ask the user which spec tool they prefer:
+
+- **OpenSpec** (requires Node.js):
+  ```bash
+  npm install -g @fission-ai/openspec@latest
+  ```
+- **SpecKit** (requires Python/uv):
+  ```bash
+  uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+  ```
 
 **Install specialized tools**:
 ```bash
@@ -119,19 +124,81 @@ The repo tracks a placeholder template at `git/.config/git/config` (`YOUR_NAME` 
 3. `git update-index --assume-unchanged git/.config/git/config` (prevents personal info from being committed)
 
 #### Claude Code Configuration
-The repo includes fish functions for running Claude Code with different model providers. These are located at `fish/.config/fish/functions/claude-*.fish`. The agent **MUST** prompt the user to:
-1. Edit each `claude-*.fish` file with their own API keys and base URLs
-2. Protect sensitive credentials from being committed:
+The agent **MUST** ask the user to choose one of three provider switching methods:
+
+**Option A: `cld` (built-in fish function)**
+The repo includes `fish/.config/fish/functions/cld.fish` — a single fish function with provider argument.
+```
+cld glm "prompt"    # Use GLM provider
+cld kimi            # Use Kimi provider
+cld proxy           # Use custom proxy
+```
+Edit `cld.fish` with real API keys and base URLs, then protect it:
 ```bash
-git update-index --assume-unchanged fish/.config/fish/functions/claude-proxy.fish
-git update-index --assume-unchanged fish/.config/fish/functions/claude-glm.fish
-git update-index --assume-unchanged fish/.config/fish/functions/claude-kimi.fish
-git update-index --assume-unchanged fish/.config/fish/functions/claude-qwen.fish
-git update-index --assume-unchanged fish/.config/fish/functions/claude-minimax.fish
+git update-index --assume-unchanged fish/.config/fish/functions/cld.fish
 ```
 
+**Option B: claude-code-router (`ccr`)**
+A proxy router that routes Claude Code requests to different providers by task type. Install and configure:
+```bash
+npm install -g @musistudio/claude-code-router
+ccr start           # Starts proxy on 127.0.0.1:3456
+ccr code            # Launch claude through router
+```
+Config at `~/.claude-code-router/config.json`. Supports per-task-type model routing, `/model provider,model` switching inside claude, and `ccr ui` web dashboard.
+
+**Option C: cc-switch**
+A desktop app (Tauri 2) for one-click provider switching across Claude Code, Codex, Gemini CLI, etc. Install:
+```bash
+brew tap farion1231/ccswitch && brew install --cask cc-switch
+```
+Since cc-switch exposes provider endpoints but has no CLI, use the built-in `cld.fish` to set `ANTHROPIC_BASE_URL` to cc-switch's local proxy. Edit the `ccswitch` case in `cld.fish` to point to cc-switch's endpoint.
+
+#### Spec-Driven Development
+The agent **MUST** ask the user to choose one of two spec-driven development tools:
+
+**Option A: OpenSpec**
+An AI-native spec-driven development framework. Install:
+```bash
+npm install -g @fission-ai/openspec@latest
+```
+Initialize in the project: `openspec init --tools claude`. Workflow: `/opsx:propose` → specs → design → tasks → `/opsx:apply` → implement → `/opsx:archive` to finalize and merge specs into `specs/` directory.
+
+ Changes are stored in `openspec/changes/<name>/`.
+
+**Option B: SpecKit (GitHub)**
+Spec-driven development with a constitution-first workflow. Install:
+```bash
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+```
+Initialize in the project: `specify init <project_name>`. Workflow: `/speckit.specify` → `/speckit.clarify` → /speckit.plan` → `/speckit.tasks` → /speckit.implement`. SpecKit starts from a constitution (project principles) and moves sequentially through specify → clarify → plan → tasks → implement.
+
+ Spec artifacts are stored in `.spe-kit/` directory.
+
+ Configuration at `.spe-kit/constitution.md`.
+
 #### Dev Workflow Summary
-Explain the custom `dev` Fish functions provided (e.g., `dev init`, `dev wt new`, `dev ai loop`, `dev ai commit`). These functions drive the OpenSpec workflow. The agent MUST advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
+The repo provides `dev` Fish functions that drive a spec-driven workflow. The full lifecycle:
+
+```
+dev init              ← initialize: cmux workspace + 3-pane layout + spec tool init
+dev wt new <name>     ← create: worktree + workspace + layout
+dev ai spec <name>    ← propose: auto wt switch -c → layout init → openspec propose / speckit.specify
+dev ai loop           ← iterate: cld reviews diff → suggests patch
+dev ai commit         ← commit: generates message → manual confirm → commit
+dev wt finish         ← finish: auto review → push → close workspace → remove worktree
+```
+
+**`dev ai spec`** creates a new change end-to-end: worktree + workspace + layout + spec proposal. It auto-detects the user's installed spec tool (OpenSpec or SpecKit).
+
+**`dev wt finish`** runs `dev ai review` automatically before pushing. The review uses the user's chosen provider method to scan the branch for bugs, performance issues, and readability problems.
+
+The `dev ai` commands should use the user's chosen provider method:
+- **cld**: `cld <provider> -p "prompt"`
+- **ccr**: `ccr code` (or `ccr start && claude`)
+- **cc-switch**: `cld ccswitch` (routes through cc-switch proxy)
+
+The agent **MUST** advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
 
 ## Important
 
