@@ -69,7 +69,27 @@ The agent MUST actively present the following options to the user and ask for th
 The agent MUST configure the user's chosen `path_template` using `wt config set`.
 
 ### 4. Stow Deployment
-- **Pre-check & Backup**: Before symlinking, check if any target directories (e.g., `~/.config/helix`, `~/.config/fish`) exist as real directories/files. If so, back them up by appending a `.bak` extension to the original path. If a `.bak` file/directory already exists at that location, the agent MUST halt and alert the user to prevent overwriting previous backups.
+- **Pre-check & Backup**: Before symlinking, check if any of the following paths exist as real directories/files (not symlinks):
+  ```
+  ~/.config/ghostty
+  ~/Library/Application Support/com.mitchellh.ghostty
+  ~/.config/fish
+  ~/.config/helix
+  ~/.config/yazi
+  ~/.config/lazygit
+  ~/Library/Application Support/lazygit
+  ~/.config/starship.toml
+  ~/.gitconfig
+  ~/.config/git/config
+  ~/.config/git/ignore
+  ~/.config/worktrunk
+  ~/.claude
+  ~/Library/Application Support/Claude/claude_desktop_config.json
+  ```
+  For each existing path, apply the following logic:
+  1. **`.bak` exists and is identical to the original** (`diff -rq <path> <path>.bak` returns 0): The user already ran `backup_configs.sh`. Safe to delete the original and proceed.
+  2. **`.bak` exists but differs from the original**: Halt and alert the user — a previous backup exists but has diverged. Re-running backup would overwrite it. Ask the user how to proceed (e.g., keep existing `.bak`, back up to a new name like `.bak2`, or skip).
+  3. **No `.bak` exists**: Run `bash backup_configs.sh` from the repo root to create backups, then delete the original config paths that are real directories (not symlinks) so that Stow can create symlinks in their place.
 - **Config Merging**: After backing up, the agent MUST attempt to merge the user's existing configurations for **ALL tools** (e.g., Helix, Yazi, LazyGit, Git, Fish) into the corresponding files **within the cloned repository's directory**. This ensures the repo's defaults and user's preferences are combined before deployment.
 - **Conflict Resolution**: If a conflict arises during merging (e.g., conflicting keybinds or aliases), the agent MUST NOT make a silent choice. Instead, ask the user an open-ended question to determine the desired behavior for that specific tool's configuration.
 - **Deployment**: Execute the Stow commands from the root of this repository (dry-run first to verify):
