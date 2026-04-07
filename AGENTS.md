@@ -149,7 +149,16 @@ stow -R -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktru
 
 ## Git Setup
 
-Before using this repo, set your Git identity in [git/.config/git/config](/Users/dontaire/Repositories/tmp/tui/git/.config/git/config):
+Git identity is resolved through a two-level hierarchy:
+
+1. **Global** — `~/.config/git/config` (managed by the `git` stow package)
+2. **Repo-level** — `.git/config` (overrides global for this repo only)
+
+Repo-level `user.name` can differ from global if you use a different handle per repo.
+
+### Setup instructions
+
+The agent **MUST** prompt the user to set their Git identity before first stow deployment. Edit [git/.config/git/config](git/.config/git/config):
 
 ```gitconfig
 [user]
@@ -163,6 +172,13 @@ Then restow the `git` package:
 stow -R -v --target="$HOME" git
 git config --global user.name
 git config --global user.email
+```
+
+To set a repo-level override (e.g., a different handle for this repo):
+
+```bash
+git config user.name "YOUR_REPO_HANDLE"
+git config user.email "your@email.com"
 ```
 
 ## Requirements
