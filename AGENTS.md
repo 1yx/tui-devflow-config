@@ -100,6 +100,7 @@ The agent MUST configure the user's chosen `path_template` using `wt config set`
   ~/.config/git/config
   ~/.config/git/ignore
   ~/.config/worktrunk
+  ~/.config/cmux
   ~/.claude
   ~/Library/Application Support/Claude/claude_desktop_config.json
   ```
@@ -111,8 +112,8 @@ The agent MUST configure the user's chosen `path_template` using `wt config set`
 - **Conflict Resolution**: If a conflict arises during merging (e.g., conflicting keybinds or aliases), the agent MUST NOT make a silent choice. Instead, ask the user an open-ended question to determine the desired behavior for that specific tool's configuration.
 - **Deployment**: Execute the Stow commands from the root of this repository (dry-run first to verify):
   ```bash
-  stow -n -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
-  stow -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk claude
+  stow -n -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude
+  stow -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude
   ```
 
 ### 4. Post-setup & Initialization
@@ -162,6 +163,49 @@ A desktop app (Tauri 2) for one-click provider switching across Claude Code, Cod
 brew tap farion1231/ccswitch && brew install --cask cc-switch
 ```
 Since cc-switch exposes provider endpoints but has no CLI, use the built-in `cld.fish` to set `ANTHROPIC_BASE_URL` to cc-switch's local proxy. Edit the `ccswitch` case in `cld.fish` to point to cc-switch's endpoint.
+
+**Default Permissions**
+
+This repo pre-configures Claude Code permissions in `claude/.claude/settings.json` (symlinked to `~/.claude/settings.json`). Claude will **auto-execute** the following commands without prompting. Review and adjust to your comfort level.
+
+**Auto-allowed commands** (global scope — affects all projects):
+
+| Command | Risk | Note |
+|---------|------|------|
+| `Bash(git:*)` | High | All git subcommands. Includes destructive ops like `reset --hard`, `clean -f` |
+| `Bash(pnpm:*)` | Medium | Can install/modify packages |
+| `Bash(bun:*)` | Medium | Can install/modify packages |
+| `Bash(node:*)` | Low | Execute scripts only |
+| `Bash(npx:*)` | Medium | Can download and execute arbitrary packages |
+| `Bash(uv:*)` | Medium | Python package management |
+| `Bash(openspec:*)` | Low | Spec tool CLI |
+| `Bash(cmux:*)` | Low | Workspace management |
+| `Bash(ls/find/grep/tree/file:*)` | Low | Read-only filesystem commands |
+| `WebSearch` / `WebFetch` | Low | Network access, no side effects |
+| `mcp__context7__*` | Low | Documentation lookup |
+| `mcp__web-search-prime__*` | Low | Web search via MCP |
+| `mcp__chrome-devtools__*` | Medium | Browser automation |
+
+**Always denied** (Claude MUST ask even if allowed above):
+
+| Command | Reason |
+|---------|--------|
+| `Bash(git push:*)` | Push affects remote — requires human confirmation |
+| `Bash(npm:*)` | Project uses pnpm/bun; npm may cause conflicts |
+
+**Project-level additions** (`.claude/settings.local.json`, per-project only):
+
+| Command | Note |
+|---------|------|
+| `Bash(fish:*)` | Fish shell syntax checking |
+
+**Merge rules**: Final permission = (global allow ∪ project allow) − (global deny ∪ project deny). `deny` always wins over `allow`.
+
+> **Note**: The tables above reflect the config at time of writing. Always refer to the actual files for the current state:
+> - Global: `claude/.claude/settings.json`
+> - Project: `.claude/settings.local.json`
+
+**How to modify**: To tighten or loosen permissions, edit the corresponding `permissions.allow` or `permissions.deny` arrays. For example, to deny all git operations in a specific project, add `"Bash(git:*)"` to the project-level `deny` list in `.claude/settings.local.json`.
 
 #### Spec-Driven Development
 The agent **MUST** ask the user to choose one of two spec-driven development tools:
