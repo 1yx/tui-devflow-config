@@ -65,6 +65,27 @@ function devflow-upgrade --description 'Execute all pending updates'
                     echo "    $pnpm_names[$i]  $pnpm_old[$i] → $pnpm_new[$i] "(set_color green)"✓"(set_color normal)
                 end
                 set total_updated (math $total_updated + $n)
+
+                # Sync opsx commands if openspec was updated
+                set -l openspec_updated false
+                for name in $pnpm_names
+                    if string match -q '*openspec*' $name
+                        set openspec_updated true
+                        break
+                    end
+                end
+                if test "$openspec_updated" = true
+                    openspec update >/dev/null 2>&1
+                    if test -d .claude/commands/opsx
+                        set -l git_root (git rev-parse --show-toplevel 2>/dev/null)
+                        if test -n "$git_root"
+                            mkdir -p "$git_root/claude/.claude/commands/opsx"
+                            cp .claude/commands/opsx/*.md "$git_root/claude/.claude/commands/opsx/"
+                            echo "    "(set_color cyan)"opsx → claude/.claude/commands/opsx/"(set_color normal)
+                        end
+                    end
+                end
+
                 echo "  "(set_color green)"✓ $n packages updated"(set_color normal)
             else
                 echo "  "(set_color green)"✓ all up to date"(set_color normal)
