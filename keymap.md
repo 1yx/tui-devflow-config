@@ -36,8 +36,10 @@ Rule:
 | `Cmd+T` | new surface/tab |
 | `Cmd+Shift+[` | previous tab |
 | `Cmd+Shift+]` | next tab |
-| `Cmd+1..8` | go to tab |
-| `Cmd+9` | last tab |
+| `Cmd+1..8` | go to surface |
+| `Cmd+9` | last surface |
+| `Ctrl+1..8` | go to workspace |
+| `Ctrl+9` | last workspace |
 | `Cmd+[` | previous split |
 | `Cmd+]` | next split |
 | `Option+Cmd+Arrows` | move between panes |
