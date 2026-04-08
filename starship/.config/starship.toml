@@ -31,16 +31,15 @@ format = "[$symbol($version)]($style) "
 style = 'bold green'
 
 [python]
-format = "[$symbol($version)(/$virtualenv)]($style) "
-style = 'bold yellow'
+disabled = true
 
 [rust]
 format = "[$symbol($version)]($style) "
 style = 'bold red'
 
-# worktree 目录视觉标识
-[directory.substitutions]
-"~/.worktrees" = "🌿 "
+# 隐藏不需要的模块
+[gcloud]
+disabled = true
 
 [character]
 success_symbol = '[❯](bold green)'
