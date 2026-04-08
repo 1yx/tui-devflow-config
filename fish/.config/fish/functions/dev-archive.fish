@@ -1,5 +1,8 @@
 # ~/.config/fish/functions/dev-archive.fish
 function dev-archive
+    # Set workflow stage
+    dev-workspace-meta --stage archive
+
     set -l branch (git branch --show-current)
 
     # Ensure no uncommitted changes

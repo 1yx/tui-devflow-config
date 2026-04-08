@@ -1,5 +1,8 @@
 # ~/.config/fish/functions/dev-implement.fish
 function dev-implement
+    # Set workflow stage
+    dev-workspace-meta --stage implement
+
     # Step 4: Apply changes (auto-detect spec tool)
     if command -q openspec
         echo "OpenSpec: run /opsx:apply in Claude to implement tasks."

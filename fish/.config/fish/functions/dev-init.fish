@@ -15,6 +15,10 @@ function dev-init
     # Initialize 3-pane layout
     dev-layout-init
 
+    # Set workspace metadata: title = branch name, status = init stage
+    set -l branch (git branch --show-current 2>/dev/null; or echo "main")
+    dev-workspace-meta --title "$branch" --stage init
+
     echo ""
     echo "Step 1/5 done. Run 'dev specify <name>' to start a change."
 end

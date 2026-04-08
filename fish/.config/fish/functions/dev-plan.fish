@@ -1,5 +1,8 @@
 # ~/.config/fish/functions/dev-plan.fish
 function dev-plan
+    # Set workflow stage
+    dev-workspace-meta --stage plan
+
     # Step 3: Plan + tasks (auto-detect spec tool)
     if command -q openspec
         # OpenSpec: propose already generated design + tasks
