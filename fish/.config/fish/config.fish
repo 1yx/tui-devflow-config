@@ -91,6 +91,10 @@ if status --is-interactive
         zoxide init fish | source
     end
 
+    if command -v uv >/dev/null 2>&1
+        set -gx UV_MANAGED_PYTHON 1
+    end
+
     if command -v wt >/dev/null 2>&1
         wt config shell init fish | source
     end
