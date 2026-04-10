@@ -8,6 +8,7 @@
       "Bash(npx:*)",
       "Bash(uv:*)",
       "Bash(openspec:*)",
+      "Bash(specify:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
