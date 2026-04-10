@@ -24,6 +24,7 @@ CONFIG_PATHS=(
     ".config/cmux"
     ".claude"
     "Library/Application Support/Claude/claude_desktop_config.json"
+    ".gemini"
 )
 
 echo "Starting configuration backup → .backup/"
