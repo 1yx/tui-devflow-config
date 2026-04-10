@@ -9,9 +9,9 @@ function dev-specify --argument name
     wt switch -c $name
     dev-layout-init
 
-    # Set workspace metadata: title = branch, description = openspec change name
+    # Set workspace metadata: title = folder, stage = specify
     set -l branch (git branch --show-current 2>/dev/null; or echo $name)
-    dev-workspace-meta --title "$branch" --description "$name" --stage specify
+    dev-workspace-meta --title (basename $PWD) --stage specify
 
     # Run spec tool explore/proposal phase (auto-detect)
     if command -q openspec

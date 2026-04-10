@@ -1,16 +1,11 @@
 # ~/.config/fish/functions/dev-workspace-meta.fish
-function dev-workspace-meta --description 'Set cmux workspace metadata (title, description, status pill)'
-    argparse 't/title=' 'd/description=' 's/stage=' 'i/icon=' -- $argv
+function dev-workspace-meta --description 'Set cmux workspace metadata (title, status pill)'
+    argparse 't/title=' 's/stage=' 'i/icon=' -- $argv
     or return 1
 
-    # Set title (branch name)
+    # Set title (folder name)
     if set -q _flag_title
-        cmux workspace-action --action rename --title "$_flag_title"
-    end
-
-    # Set description (openspec change name)
-    if set -q _flag_description
-        cmux workspace-action --action set-description --description "$_flag_description"
+        cmux workspace-action --action rename --title "$_flag_title" >/dev/null 2>&1
     end
 
     # Set status pill (workflow stage)
@@ -30,6 +25,6 @@ function dev-workspace-meta --description 'Set cmux workspace metadata (title, d
                     set icon archivebox
             end
         end
-        cmux set-status stage "$_flag_stage" --icon "$icon"
+        cmux set-status stage "$_flag_stage" --icon "$icon" >/dev/null 2>&1
     end
 end
