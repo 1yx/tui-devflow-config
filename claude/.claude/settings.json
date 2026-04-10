@@ -13,6 +13,7 @@
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(tree:*)",
+      "Bash(echo:*)",
       "Bash(file:*)",
       "Bash(cmux:*)",
       "WebSearch",
@@ -21,10 +22,7 @@
       "mcp__web-search-prime__*",
       "mcp__chrome-devtools__*"
     ],
-    "deny": [
-      "Bash(git push:*)",
-      "Bash(npm:*)"
-    ]
+    "deny": ["Bash(git push:*)", "Bash(npm:*)"]
   },
   "hooks": {
     "Stop": [
