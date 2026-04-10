@@ -1,56 +1,77 @@
-# TUI Dev Flow Config 
+# Agentic-TUI 🚀
 
-An Agent-based TUI development workflow based on **cmux + claude code + worktruck**.
-Designed specifically for macOS. Configurations follow the **XDG Base Directory Specification** and are managed using GNU Stow.
+> **The Agent-native TUI development environment for macOS.**
+> 
+> [![macOS](https://img.shields.io/badge/OS-macOS-brightgreen.svg)](https://apple.com)
+> [![Shell](https://img.shields.io/badge/Shell-Fish-blue.svg)](https://fishshell.com/)
+> [![Editor](https://img.shields.io/badge/Editor-Helix-orange.svg)](https://helix-editor.com/)
+> [![Agent-First](https://img.shields.io/badge/Flow-Agent--Native-blueviolet.svg)](https://github.com/features/copilot)
 
-## Principles
-
-- **Tooling for Humans**: Prioritize out-of-the-box (OOTB) tools to serve human intent first.
-- **Agent-First Flow**: Optimize every layer for seamless AI Agent interaction (context, specifications, and automation).
-- **Frictionless Interaction**: Maintain full compatibility with **GNU Readline** (Emacs-style) keybindings while strictly avoiding shortcut collisions across the entire stack.
-
-## Architecture (cmux)
-
-![cmux Hierarchy](./cmux_hierarchy.svg)
-
-This environment is built on a four-layer hierarchical structure provided by **cmux**, mapped to your development workflow:
-
-| Layer | Semantic Mapping | Description |
-|---|---|---|
-| **Window** | **Project** | A standalone macOS window for a specific project. |
-| **Workspace** | **Git Worktree** | A dedicated tab in the **left sidebar** per branch/directory. |
-| **Pane** | **Tools** | Split views within a workspace (e.g., Editor, Git View, File Manager). |
-| **Surface** | **Task** | **Horizontal tabs at the top of a pane** for switching sub-tasks. |
-
-## ⚠️ Security & Backup Warning
-
-**IMPORTANT**: This project is designed to allow AI Agents to automatically modify your local tool configurations (e.g., Helix, Fish, Git, etc.). 
-
-Before proceeding, you **MUST** manually review and run the provided backup script to safeguard your current settings:
-
-1. Review the `backup_configs.sh` script in this repository.
-2. Run it locally:
-   ```bash
-   bash ./backup_configs.sh
-   ```
-This script will create `.bak` copies of your existing configuration files in their original locations without deleting them.
-
-## 🚀 Quick Start
-
-Copy this repository URL and send it to your AI Agent (e.g., Claude Code, Gemini CLI) with the following prompt:
-
-> "Please read AGENTS.md from this repository and follow its specifications to help me install and configure this TUI development environment on my macOS."
-
-## Core Components
-   - **cmux**: Window and layout management
-   - **Claude Code**: Code Agent
-   - **OpenSpec**: Specification-driven project management
-   - **worktrunk**: Management of **git worktree** driven workflows (one workspace per branch)
-   - **Helix**: Core code editor
-   - **Yazi**: Terminal file manager
-   - **LazyGit**: Git interactive interface
-   - **Fish & Starship**: Modern shell experience
+Config managed via GNU Stow, designed for **parallel AI agent execution** and friction-less human-machine synergy.
 
 ---
 
-For detailed design specifications and command systems, please refer to [AGENTS.md](./AGENTS.md).
+<!--
+## 📸 Preview
+
+TODO: Add an HD screenshot of the 3-pane layout (Helix | Claude | Yazi/LazyGit)
+![Agentic-TUI Preview](./screenshot_placeholder.png)
+-->
+
+## Architecture (cmux)
+
+The diagram below shows the hierarchical structure provided by the **cmux** app:
+
+![cmux Hierarchy](./cmux_hierarchy.svg)
+
+| Layer | Mapping | Example |
+|-------|---------|---------|
+| **Window** | Project | `myapp` |
+| **Workspace** | Git Worktree / Branch | `myapp · feat/auth` |
+| **Pane** | Task Zone | editor / agent / files |
+| **Surface** | Tool Tab | `[claude] [helix] [lazygit]` |
+
+Each workspace uses a fixed 3-pane layout: **Helix** (editor) | **Claude/Agent** (AI agent) | **Yazi/LazyGit** (files/git).
+
+---
+
+## ⚡ Quick Start
+
+Copy this repo URL and send it to your AI agent (Claude Code / Gemini CLI) with:
+
+> "Read [**AGENTS.md**](./AGENTS.md) from this repo and follow its instructions to set up this TUI dev environment on my macOS."
+
+The agent will handle: dependency installation, config backup & merge, Stow deployment, and verification. (It will also offer a **One-Shot** fast-track if you prefer the recommended defaults).
+
+---
+
+## Tools
+
+| Category | Tool |
+|----------|------|
+| Window / Layout | [cmux](https://cmux.com/) |
+| Editor | [Helix](https://helix-editor.com/) |
+| AI Agent | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) / [Gemini CLI](https://github.com/google-gemini/gemini-cli) |
+| File Manager | [Yazi](https://yazi-rs.github.io/) |
+| Git Interface | [LazyGit](https://github.com/jesseduffield/lazygit) |
+| Worktree Manager | [worktrunk](https://github.com/max-sixty/worktrunk) |
+| Shell / Prompt | [Fish](https://fishshell.com/) + [Starship](https://starship.rs/) |
+| Spec-Driven Dev | [OpenSpec](https://github.com/Fission-AI/OpenSpec) or [SpecKit](https://github.com/github/spec-kit) |
+| Config Management | [GNU Stow](https://www.gnu.org/software/stow/) |
+
+---
+
+## Docs
+
+| File | Purpose |
+|------|---------|
+| [AGENTS.md](./AGENTS.md) | Standard setup guide — give this to your AI agent |
+| [ONESHOT.md](./ONESHOT.md) | One-shot (opinionated) setup — zero interaction |
+| [CLAUDE.md](./CLAUDE.md) | Design specs & dev workflow (maintainer reference) |
+| [KEYMAP.md](./KEYMAP.md) | Cheat sheet for all tool shortcuts |
+
+## Principles
+
+- **Tooling for Humans**: OOTB tools serve human intent first.
+- **Agent-First Flow**: Every layer optimized for AI agent interaction.
+- **Frictionless Interaction**: Full GNU Readline (Emacs-style) keybindings, zero shortcut collisions across the stack.

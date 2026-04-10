@@ -1,6 +1,6 @@
-# tui-devflow-config
+# Agentic-TUI
 
-Agent-first dotfiles repo for a TUI dev workflow on macOS.
+Agent-native dotfiles for a high-performance TUI development OS on macOS.
 
 ## Purpose
 
@@ -21,6 +21,8 @@ It uses GNU Stow. Each top-level directory is one stow package.
 
 ## Agent Setup Instructions
 
+> **Fast Track**: If you want to skip all interactive choices and apply the **Recommended Defaults** (SpecKit, Sibling Worktrees, cld.fish), refer the Agent to [**ONESHOT.md**](./ONESHOT.md) instead.
+
 When an AI Agent is invoked to set up this environment, it MUST execute the following steps strictly:
 
 ### 1. Pre-flight Checks
@@ -36,10 +38,10 @@ brew install stow helix yazi lazygit fish starship
 ```
 
 #### Switch to Fish and fix PATH
-After installing fish via Homebrew, the agent **MUST**:
+If the pre-flight check (§1) determined the current shell is **not** fish, the agent **MUST**:
 1. Add fish to `/etc/shells`: `echo (brew --prefix)/bin/fish | sudo tee -a /etc/shells`
 2. Set fish as default shell: `chsh -s (brew --prefix)/bin/fish`
-3. Ensure Homebrew paths are correct in fish. Add to `~/.config/fish/config.fish` (before stow deployment):
+3. Ensure Homebrew paths are correct in fish. Add to the repo's `fish/.config/fish/config.fish` (not `~/.config/fish/` — Stow will symlink it later):
    ```fish
    # Homebrew
    /opt/homebrew/bin/brew shellenv | source
@@ -62,7 +64,6 @@ The agent **MUST** ask the user which spec tool they prefer:
 ```bash
 brew tap manaflow-ai/cmux
 brew install --cask cmux
-
 ```
 
 #### Install worktrunk
@@ -71,19 +72,26 @@ brew install worktrunk
 wt config shell install
 ```
 
-After installing worktrunk, the agent **MUST** ask the user to choose a worktree directory structure:
+After installing worktrunk, the agent **MUST** ask the user to choose a worktree directory structure.
+
+The `worktree-path` setting in `~/.config/worktrunk/config.toml` controls where new worktrees are created. Available variables: `{{ main_worktree }}` (repo directory name), `{{ branch }}` (branch name, slashes → dashes).
 
 - **Option A: Sibling/Flat (Recommended)**
-  Worktrees are created alongside the main repository (e.g., `../tui.feature-auth`).
+  Worktrees are created alongside the main repository (e.g., `~/code/myproject.feature-login`).
   *Best for*: Complete isolation and parallel AI Agent execution.
-  *Setup Command*: `wt config set path_template "../{{.RepoName}}.{{.BranchName}}"`
+  *Config*: `worktree-path = "../{{ main_worktree }}.{{ branch }}"`
 
 - **Option B: Nested/Hidden**
-  Worktrees are kept within a sub-directory of the main repository (e.g., `.worktrees/feature-auth`).
+  Worktrees are kept within a sub-directory of the main repository (e.g., `~/code/myproject/.worktrees/feature-login`).
   *Best for*: Keeping the project self-contained in one parent folder.
-  *Setup Command*: `wt config set path_template ".worktrees/{{.BranchName}}"`
+  *Config*: `worktree-path = ".worktrees/{{ branch }}"`
 
-The agent MUST configure the user's chosen `path_template` using `wt config set`.
+- **Option C: Namespaced**
+  All worktrees are collected under a shared `../worktrees/<project>/` directory (e.g., `~/code/worktrees/myproject/feature-login`).
+  *Best for*: Multiple repos sharing the same parent directory — keeps parent folder clean.
+  *Config*: `worktree-path = "../worktrees/{{ main_worktree }}/{{ branch }}"`
+
+The agent MUST set the user's chosen `worktree-path` in the repo's `worktrunk/.config/worktrunk/config.toml` (not `~/.config/worktrunk/` — Stow will symlink it later).
 
 ### 3. Stow Deployment
 - **Pre-check & Backup**: Before symlinking, check if any of the following paths exist as real directories/files (not symlinks):
@@ -105,11 +113,44 @@ The agent MUST configure the user's chosen `path_template` using `wt config set`
   ~/Library/Application Support/Claude/claude_desktop_config.json
   ```
   For each existing path, apply the following logic:
-  1. **`.bak` exists and is identical to the original** (`diff -rq <path> <path>.bak` returns 0): The user already ran `backup_configs.sh`. Safe to delete the original and proceed.
-  2. **`.bak` exists but differs from the original**: Halt and alert the user — a previous backup exists but has diverged. Re-running backup would overwrite it. Ask the user how to proceed (e.g., keep existing `.bak`, back up to a new name like `.bak2`, or skip).
-  3. **No `.bak` exists**: Run `bash backup_configs.sh` from the repo root to create backups, then delete the original config paths that are real directories (not symlinks) so that Stow can create symlinks in their place.
-- **Config Merging**: After backing up, the agent MUST attempt to merge the user's existing configurations for **ALL tools** (e.g., Helix, Yazi, LazyGit, Git, Fish) into the corresponding files **within the cloned repository's directory**. This ensures the repo's defaults and user's preferences are combined before deployment.
+  1. **`.backup/` exists and is up-to-date**: The user already ran `backup_configs.sh`. Safe to delete the original and proceed.
+  2. **`.backup/` exists but is stale**: Halt and alert the user — a previous backup exists but has diverged. Ask the user how to proceed (e.g., overwrite `.backup/`, or skip). After resolving, delete the original config paths that are real directories (not symlinks) so that Stow can create symlinks in their place.
+  3. **No `.backup/` exists**: Run `bash backup_configs.sh` from the repo root to create backups in `.backup/`, then delete the original config paths that are real directories (not symlinks) so that Stow can create symlinks in their place.
+- **Config Merging**: After backing up, the agent MUST attempt to merge the user's existing configurations for **ALL tools** (e.g., Helix, Yazi, LazyGit, Git, Fish) into the corresponding files **within the cloned repository's directory** (not `~`). The merged configs live in the repo, then Stow creates symlinks from `~` to the repo during deployment.
 - **Conflict Resolution**: If a conflict arises during merging (e.g., conflicting keybinds or aliases), the agent MUST NOT make a silent choice. Instead, ask the user an open-ended question to determine the desired behavior for that specific tool's configuration.
+- **Keymap Generation**: After merging, the agent MUST regenerate `KEYMAP.md` based on the final merged configurations. During this process, perform a **collision check** across all tools (e.g., ensuring a Helix shortcut doesn't conflict with a global or cmux shortcut). If conflicts are found, notify the user and guide them through a resolution. To inspect each tool's keybindings during collision check:
+
+  ```bash
+  # cmux（no CLI to print all shortcuts; see command palette ⌘⇧P and CLAUDE.md "cmux 原生快捷键"）
+  cmux --help
+
+  # Ghostty（view full active config including keybinds; fails if not installed）
+  ghostty +show-config
+
+  # Helix（CLI gives help/tutorial entry; full defaults via tutor / built-in help）
+  hx --help
+  hx --tutor
+
+  # Yazi（no "print all shortcuts" CLI; project custom keys in repo keymap）
+  yazi --help
+  sed -n '1,200p' yazi/.config/yazi/keymap.toml
+
+  # Fish（no unified shortcut table; use `bind` in interactive session）
+  fish --help
+  fish -C bind -C exit
+
+  # LazyGit（help and defaults in-app; keys via help panel）
+  lazygit --help
+  lazygit --config
+
+  # Starship（no shortcut system; print prompt config）
+  STARSHIP_CONFIG="$(pwd)/starship/.config/starship.toml" starship print-config
+
+  # worktrunk（no shortcuts; CLI subcommands）
+  wt --help
+  ```
+
+  Note: Project custom keybindings are primarily in `helix/.config/helix/config.toml` and `yazi/.config/yazi/keymap.toml`. Full default keymaps for cmux, Ghostty, Helix, Yazi, LazyGit are best viewed via in-app help/tutorial/command palette.
 - **Deployment**: Execute the Stow commands from the root of this repository (dry-run first to verify):
   ```bash
   stow -n -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude
@@ -118,14 +159,13 @@ The agent MUST configure the user's chosen `path_template` using `wt config set`
 
 ### 4. Post-setup & Initialization
 
-#### Keymap Regeneration
-The agent MUST regenerate `KEYMAP.md` based on the final merged configurations. During this process, the agent must perform a **collision check** across all tools (e.g., ensuring a Helix shortcut doesn't conflict with a global or cmux shortcut). If conflicts are found, the agent must notify the user and guide them through a resolution.
-
-#### Keymap Reference
-Explicitly remind the user to read the updated `KEYMAP.md`. This file serves as the single-page checksheet for the entire TUI environment (cmux, Helix, Yazi, LazyGit, etc.) and contains all custom overrides.
-
-#### Smoke Tests
-Run the validation commands (e.g., `hx --health`, `stow --version`, `cmux --help`) to ensure a successful setup.
+#### XDG Compatibility
+LazyGit and Git on macOS do not use `~/.config/` by default. Fish environment variables (already in `fish/.config/fish/config.fish`) handle this:
+```fish
+set -gx XDG_CONFIG_HOME ~/.config           # LazyGit reads this
+set -gx GIT_CONFIG_GLOBAL ~/.config/git/config  # Git reads this
+```
+Claude hardcodes `~/.claude/` and cannot be changed — the only exception.
 
 #### Git Identity Setup
 The repo tracks a placeholder template at `git/.config/git/config` (`YOUR_NAME` / `your@email.com`). If these values are still placeholders, the agent **MUST** guide the user through:
@@ -166,69 +206,17 @@ Since cc-switch exposes provider endpoints but has no CLI, use the built-in `cld
 
 **Default Permissions**
 
-This repo pre-configures Claude Code permissions in `claude/.claude/settings.json` (symlinked to `~/.claude/settings.json`). Claude will **auto-execute** the following commands without prompting. Review and adjust to your comfort level.
-
-**Auto-allowed commands** (global scope — affects all projects):
-
-| Command | Risk | Note |
-|---------|------|------|
-| `Bash(git:*)` | High | All git subcommands. Includes destructive ops like `reset --hard`, `clean -f` |
-| `Bash(pnpm:*)` | Medium | Can install/modify packages |
-| `Bash(bun:*)` | Medium | Can install/modify packages |
-| `Bash(node:*)` | Low | Execute scripts only |
-| `Bash(npx:*)` | Medium | Can download and execute arbitrary packages |
-| `Bash(uv:*)` | Medium | Python package management |
-| `Bash(openspec:*)` | Low | Spec tool CLI |
-| `Bash(cmux:*)` | Low | Workspace management |
-| `Bash(ls/find/grep/tree/file:*)` | Low | Read-only filesystem commands |
-| `WebSearch` / `WebFetch` | Low | Network access, no side effects |
-| `mcp__context7__*` | Low | Documentation lookup |
-| `mcp__web-search-prime__*` | Low | Web search via MCP |
-| `mcp__chrome-devtools__*` | Medium | Browser automation |
-
-**Always denied** (Claude MUST ask even if allowed above):
-
-| Command | Reason |
-|---------|--------|
-| `Bash(git push:*)` | Push affects remote — requires human confirmation |
-| `Bash(npm:*)` | Project uses pnpm/bun; npm may cause conflicts |
-
-**Project-level additions** (`.claude/settings.local.json`, per-project only):
-
-| Command | Note |
-|---------|------|
-| `Bash(fish:*)` | Fish shell syntax checking |
-
-**Merge rules**: Final permission = (global allow ∪ project allow) − (global deny ∪ project deny). `deny` always wins over `allow`.
-
-> **Note**: The tables above reflect the config at time of writing. Always refer to the actual files for the current state:
-> - Global: `claude/.claude/settings.json`
-> - Project: `.claude/settings.local.json`
-
-**How to modify**: To tighten or loosen permissions, edit the corresponding `permissions.allow` or `permissions.deny` arrays. For example, to deny all git operations in a specific project, add `"Bash(git:*)"` to the project-level `deny` list in `.claude/settings.local.json`.
+This repo pre-configures Claude Code permissions in `claude/.claude/settings.json` (symlinked to `~/.claude/settings.json`). The agent **MUST** ask the user to review these permissions and adjust to their comfort level. Key points:
+- Auto-allowed: `git`, `pnpm`, `bun`, `node`, `npx`, `uv`, `openspec`, `specify`, `cmux`, read-only filesystem commands, `WebSearch`/`WebFetch`, MCP tools.
+- Always denied (requires human confirmation): `git push`, `npm`.
+- To modify: edit `permissions.allow` or `permissions.deny` arrays in `claude/.claude/settings.json`.
 
 #### Spec-Driven Development
-The agent **MUST** ask the user to choose one of two spec-driven development tools:
+The spec tool was installed in §2. Here is the workflow for each:
 
-**Option A: OpenSpec**
-An AI-native spec-driven development framework. Install:
-```bash
-npm install -g @fission-ai/openspec@latest
-```
-Initialize in the project: `openspec init --tools claude`. Workflow: `/opsx:propose` → specs → design → tasks → `/opsx:apply` → implement → `/opsx:archive` to finalize and merge specs into `specs/` directory.
+**OpenSpec** workflow uses Claude Code skills (slash commands): `/opsx:propose` → specs → design → tasks → `/opsx:apply` → implement → `/opsx:archive`. Initialize with `openspec init --tools claude`. Changes are stored in `openspec/changes/<name>/`.
 
- Changes are stored in `openspec/changes/<name>/`.
-
-**Option B: SpecKit (GitHub)**
-Spec-driven development with a constitution-first workflow. Install:
-```bash
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-```
-Initialize in the project: `specify init <project_name>`. Workflow: `/speckit.specify` → `/speckit.clarify` → /speckit.plan` → `/speckit.tasks` → /speckit.implement`. SpecKit starts from a constitution (project principles) and moves sequentially through specify → clarify → plan → tasks → implement.
-
- Spec artifacts are stored in `.spe-kit/` directory.
-
- Configuration at `.spe-kit/constitution.md`.
+**SpecKit** workflow uses Claude Code skills (slash commands): `/speckit.specify` → `/speckit.clarify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement`. Initialize with `specify init <project_name>`. Spec artifacts are stored in `.spe-kit/` directory. Configuration at `.spe-kit/constitution.md`.
 
 #### Dev Workflow Summary
 The repo provides a unified 5-step `dev` workflow that maps to both OpenSpec and SpecKit:
@@ -259,7 +247,52 @@ Key behaviors:
 
 The `dev` commands use `cld` for AI prompts. The agent **MUST** advise the user that these are templates and should be modified in `fish/.config/fish/functions/` to match their specific team or project requirements.
 
-### 5. Launch & Explore
+### 5. Smoke Tests
+Run the following commands from the project root to verify each tool's configuration:
+
+```bash
+# Ghostty（built-in show-config; will fail if ghostty is not installed）
+ghostty +show-config --default --docs >/dev/null
+
+# Stow（confirm command is available）
+stow --version
+
+# Helix（load project config explicitly）
+hx --config "$(pwd)/helix/.config/helix/config.toml" --health
+
+# Yazi（no standalone validate subcommand; smoke test with custom config dir）
+YAZI_CONFIG_HOME="$(pwd)/yazi/.config/yazi" yazi --debug
+
+# Fish（syntax check）
+fish -n fish/.config/fish/config.fish
+fish -n fish/.config/fish/functions/*.fish
+
+# LazyGit（no standalone lint subcommand; load project config for smoke test）
+lazygit --use-config-file "$(pwd)/lazygit/.config/lazygit/config.yml" --debug
+
+# Starship（load project config explicitly）
+STARSHIP_CONFIG="$(pwd)/starship/.config/starship.toml" starship explain
+
+# worktrunk（point XDG_CONFIG_HOME to project config）
+XDG_CONFIG_HOME="$(pwd)/worktrunk/.config" wt config show >/dev/null
+
+# Git（parse project-local git config）
+git config --file "$(pwd)/git/.config/git/config" --list >/dev/null
+
+# Claude settings / hooks
+jq empty claude/.claude/settings.json
+bash -n claude/.claude/hooks/cmux-notify.sh
+
+# uv（confirm available and verify config loads）
+uv --version
+cat uv/.config/uv/uv.toml
+```
+
+Notes:
+- `yazi --debug` and `lazygit --debug` will enter interactive mode; the goal is to confirm no config parse errors on startup.
+- `wt config show` reads `XDG_CONFIG_HOME/worktrunk/config.toml`, hence the override above.
+
+### 6. Launch & Explore
 Setup is complete. The agent **MUST** now guide the user to:
 1. Open the **cmux** app.
 2. `cd` into this project directory.
@@ -267,3 +300,6 @@ Setup is complete. The agent **MUST** now guide the user to:
 4. Ask Claude about any tool's shortcuts, keybindings, or configuration details (e.g. "show me helix keymap", "what does ⌘D do in cmux", "explain the dev workflow").
 5. Request modifications to fit the user's own preferences — Claude will edit the stow packages and restow as needed.
 6. Before pushing to a remote repository, remind the user to protect sensitive data (API keys, tokens, secrets). Use `git update-index --assume-unchanged <file>` on any file containing real credentials to prevent accidental commits.
+
+#### Keymap & Shortcut Viewing
+Remind the user that `KEYMAP.md` in the project root is the single-page cheatsheet for all tool keybindings and custom overrides. If the user has any questions about shortcuts or keybindings (e.g. "what does ⌘D do in cmux", "show me helix keymap"), they can ask the agent at any time.
