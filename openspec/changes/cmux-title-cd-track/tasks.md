@@ -1,31 +1,29 @@
-## 1. Create Title CD Hook Function
+## 1. Create CD Hook Function
 
-- [ ] 1.1 Create `fish/.config/fish/functions/_cmux_title_cd_hook.fish` — contains `_cmux_title_cd_hook` (cd handler with `--on-variable PWD`) and `_cmux_acquire_title_lock` (file-lock election)
-- [ ] 1.2 Implement file-lock election: write PID to temp file, `mv` to `/tmp/cmux-title-lock-$CMUX_WORKSPACE_ID`; if mv fails, check existing PID with `kill -0`, dead → unlink + retry
-- [ ] 1.3 Implement PWD atomic write: write to `/tmp/cmux-pwd-$CMUX_WORKSPACE_ID.tmp` then `mv` to `/tmp/cmux-pwd-$CMUX_WORKSPACE_ID`
-- [ ] 1.4 Implement project directory guard in cd hook: `test -d .git; or test -d openspec; or test -d specs` — skip if none exists
-- [ ] 1.5 Implement cmux rename call in cd hook: `cmux workspace-action --action rename --title (basename $PWD) >/dev/null 2>&1`
-- [ ] 1.6 Add `__cmux_title_cleanup` to `--on-event fish_exit`: if current PID matches lock file content, delete lock + PWD file
+- [x] 1.1 Create `fish/.config/fish/functions/_cmux_title_cd_hook.fish` — contains `_cmux_title_cd_hook` (cd handler with `--on-variable PWD`) and `__cmux_title_cleanup` (per-surface file cleanup on fish_exit)
+- [x] 1.2 Implement registration file creation on function load: `touch /tmp/cmux-reg-$CMUX_WORKSPACE_ID-$CMUX_SURFACE_ID`
+- [x] 1.3 Implement initial PWD file write on function load: compute `basename (git rev-parse --show-toplevel 2>/dev/null)`, atomic write to `/tmp/cmux-pwd-$CMUX_WORKSPACE_ID-$CMUX_SURFACE_ID`; skip if git rev-parse fails
+- [x] 1.4 Implement cd hook: on PWD change, compute `basename (git rev-parse --show-toplevel 2>/dev/null)`, atomic write to PWD file; skip if git rev-parse fails. cd hook SHALL NOT call any cmux commands
+- [x] 1.5 Implement `__cmux_title_cleanup` on `--on-event fish_exit`: delete `/tmp/cmux-reg-$CMUX_WORKSPACE_ID-$CMUX_SURFACE_ID` and `/tmp/cmux-pwd-$CMUX_WORKSPACE_ID-$CMUX_SURFACE_ID` (unconditional, no holder check needed)
 
 ## 2. Update Polling Function
 
-- [ ] 2.1 In `_cmux_meta_poll.fish` polling loop: read `/tmp/cmux-pwd-$CMUX_WORKSPACE_ID` at each cycle; if content differs from last title PWD, call `cmux workspace-action --action rename --title (basename $content) >/dev/null 2>&1`
-- [ ] 2.2 Skip PWD file read if file does not exist (no title holder yet)
-- [ ] 2.3 Remove the initial `cmux workspace-action --action rename` from first-run refresh (title is now managed by cd hook + polling sync)
+- [x] 2.1 In `_cmux_meta_poll.fish`: add `_last_title` variable for title diff skip
+- [x] 2.2 In polling loop: `ls -rt /tmp/cmux-reg-$CMUX_WORKSPACE_ID-* 2>/dev/null | head -1` to find first surface registration file
+- [x] 2.3 Extract surface UUID from registration file path, construct corresponding PWD file path, read its content
+- [x] 2.4 Diff skip: if PWD content equals `_last_title`, skip; otherwise call `cmux workspace-action --action rename --title "$content" >/dev/null 2>&1` and update `_last_title`
+- [x] 2.5 Handle no registration files: if `ls` returns nothing, skip title update (keep current title)
+- [x] 2.6 Remove the initial `cmux workspace-action --action rename --title (basename $PWD)` from first-run refresh — instead, run the same first-surface detection logic on first run with fallback to `basename $PWD` if no PWD files exist yet
 
 ## 3. Update config.fish
 
-- [ ] 3.1 In the cmux auto-metadata block: source/call `_cmux_acquire_title_lock` after launching `_cmux_meta_poll &`, so the first fish claims title holder
-- [ ] 3.2 Add `>/dev/null 2>&1` to all new cmux calls in config.fish
+- [x] 3.1 In the cmux auto-metadata block: call `_cmux_title_cd_hook` (triggers registration + initial PWD write) before launching `_cmux_meta_poll &`
+- [x] 3.2 Ensure `>/dev/null 2>&1` on the polling launch (already present, verify)
 
-## 4. Update Specs
+## 4. Verify
 
-- [ ] 4.1 Update `openspec/specs/workspace-auto-meta/spec.md` to reflect new title tracking behavior (cd hook + polling sync)
-
-## 5. Verify
-
-- [ ] 5.1 Run `fish -n fish/.config/fish/functions/_cmux_title_cd_hook.fish` to verify syntax
-- [ ] 5.2 Run `fish -n fish/.config/fish/functions/_cmux_meta_poll.fish` to verify syntax
-- [ ] 5.3 Run `fish -n fish/.config/fish/config.fish` to verify syntax
-- [ ] 5.4 Restow fish package: `stow -R -v --target="$HOME" fish`
-- [ ] 5.5 Test: open cmux, cd to another project directory, verify sidebar title updates within 10s
+- [x] 4.1 Run `fish -n fish/.config/fish/functions/_cmux_title_cd_hook.fish` to verify syntax
+- [x] 4.2 Run `fish -n fish/.config/fish/functions/_cmux_meta_poll.fish` to verify syntax
+- [x] 4.3 Run `fish -n fish/.config/fish/config.fish` to verify syntax
+- [x] 4.4 Restow fish package: `stow -R -v --target="$HOME" fish`
+- [x] 4.5 Test: open cmux with 2 surfaces, verify sidebar title matches first surface's project; close first surface, verify title falls back to second surface within 10s; cd in second surface to another project, verify title updates within 10s
