@@ -1,0 +1,9 @@
+.DS_Store
+
+# Local backups and generated Claude workspace state
+.backup/
+/.claude/
+openspec/
+
+# Project-specific AI instructions
+GEMINI.md
