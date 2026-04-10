@@ -1,4 +1,4 @@
-# TUI Dev OS CHECKSHEET
+# Agentic-TUI CHECKSHEET
 
 Single-page shortcut sheet for this repo.
 
