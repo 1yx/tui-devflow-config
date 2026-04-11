@@ -41,12 +41,8 @@ function cld --argument provider
             set -a env_args ANTHROPIC_DEFAULT_HAIKU_MODEL=minimax/minimax-m2.5:free
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=minimax/minimax-m2.5:free
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=minimax/minimax-m2.5:free
-        case ccswitch
-            # cc-switch proxy endpoint — configure after installing cc-switch
-            set -a env_args ANTHROPIC_BASE_URL=http://127.0.0.1:3456
-            set -a env_args ANTHROPIC_AUTH_TOKEN=your-api-key
         case '*'
-            echo "Usage: cld <proxy|glm|kimi|qwen|minimax|ccswitch> [claude args...]"
+            echo "Usage: cld <proxy|glm|kimi|qwen|minimax> [claude args...]"
             echo "       cld [claude args...]  (uses \$CLD_DEFAULT_PROVIDER)"
             return 1
     end
