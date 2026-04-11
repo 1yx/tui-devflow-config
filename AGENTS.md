@@ -174,7 +174,7 @@ The repo tracks a placeholder template at `git/.config/git/config` (`YOUR_NAME` 
 3. `git update-index --assume-unchanged git/.config/git/config` (prevents personal info from being committed)
 
 #### Claude Code Configuration
-The agent **MUST** ask the user to choose one of three provider switching methods:
+The agent **MUST** ask the user to choose one of the following provider switching methods:
 
 **Option A: `cld` (built-in fish function)**
 The repo includes `fish/.config/fish/functions/cld.fish` — a single fish function with provider argument.
@@ -196,13 +196,6 @@ ccr start           # Starts proxy on 127.0.0.1:3456
 ccr code            # Launch claude through router
 ```
 Config at `~/.claude-code-router/config.json`. Supports per-task-type model routing, `/model provider,model` switching inside claude, and `ccr ui` web dashboard.
-
-**Option C: cc-switch**
-A desktop app (Tauri 2) for one-click provider switching across Claude Code, Codex, Gemini CLI, etc. Install:
-```bash
-brew tap farion1231/ccswitch && brew install --cask cc-switch
-```
-Since cc-switch exposes provider endpoints but has no CLI, use the built-in `cld.fish` to set `ANTHROPIC_BASE_URL` to cc-switch's local proxy. Edit the `ccswitch` case in `cld.fish` to point to cc-switch's endpoint.
 
 **Default Permissions**
 
