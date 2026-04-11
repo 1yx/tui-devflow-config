@@ -6,7 +6,7 @@
 
 This repository is managed using GNU Stow. Each top-level directory is a stow package:
 
-`ghostty` `helix` `yazi` `fish` `starship` `lazygit` `git` `worktrunk` `cmux` `uv` `claude`
+`ghostty` `helix` `yazi` `fish` `starship` `lazygit` `git` `worktrunk` `cmux` `uv` `claude` `gemini`
 
 After modifying any package, restow the corresponding package:
 ```bash

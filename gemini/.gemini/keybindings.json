@@ -1,0 +1,10 @@
+[
+  {
+    "command": "cursor.left",
+    "key": "ctrl+b"
+  },
+  {
+    "command": "edit.deleteRightAll",
+    "key": "ctrl+k"
+  }
+]

@@ -279,6 +279,13 @@ Prompt
 | `Tab` / `BackTab` | next / previous completion |
 | `Enter` | accept |
 
+## Gemini CLI
+
+| Key | Meaning |
+|---|---|
+| `Ctrl+B` | left |
+| `Ctrl+K` | delete to line end |
+
 ## Yazi
 
 Repo custom:
