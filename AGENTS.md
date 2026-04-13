@@ -184,16 +184,24 @@ The repo tracks a placeholder template at `git/.config/git/config` (`YOUR_NAME` 
 The agent **MUST** ask the user to choose one of the following provider switching methods:
 
 **Option A: `cld` (built-in fish function)**
-The repo includes `fish/.config/fish/functions/cld.fish` — a single fish function with provider argument.
+The repo includes `fish/.config/fish/functions/cld.fish` — a single fish function with provider argument. All API keys and base URLs are read from Fish universal variables, so `cld.fish` contains no secrets and can be safely committed.
 ```
 cld glm "prompt"    # Use GLM provider
 cld kimi            # Use Kimi provider
 cld proxy           # Use custom proxy
 ```
-Edit `cld.fish` with real API keys and base URLs, then protect it:
-```bash
-git update-index --assume-unchanged fish/.config/fish/functions/cld.fish
+To set up providers, configure the following Fish universal variables (persist across sessions, stored in `~/.config/fish/fish_variables`):
+```fish
+set -Ux CLD_PROXY_URL https://your-proxy.example.com
+set -Ux CLD_PROXY_TOKEN your-proxy-token
+set -Ux CLD_GLM_URL https://open.bigmodel.cn/api/anthropic
+set -Ux CLD_GLM_TOKEN your-glm-token
+set -Ux CLD_KIMI_URL https://api.kimi.com/coding/
+set -Ux CLD_KIMI_KEY your-kimi-key
+set -Ux CLD_OPENROUTER_URL https://openrouter.ai/api
+set -Ux CLD_OPENROUTER_TOKEN your-openrouter-token
 ```
+To add a new provider, add a `case` block in `cld.fish` and set the corresponding `CLD_*_URL` and `CLD_*_TOKEN` universal variables.
 
 **Option B: claude-code-router (`ccr`)**
 A proxy router that routes Claude Code requests to different providers by task type. Install and configure:
