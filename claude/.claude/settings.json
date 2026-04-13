@@ -1,4 +1,31 @@
 {
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/cmux-notify.sh PostToolUse Task",
+            "type": "command"
+          }
+        ],
+        "matcher": "Task"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/cmux-notify.sh Stop",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(git:*)",
@@ -22,33 +49,9 @@
       "mcp__web-search-prime__*",
       "mcp__chrome-devtools__*"
     ],
-    "deny": ["Bash(git push:*)", "Bash(npm:*)"]
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/cmux-notify.sh Stop"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/cmux-notify.sh PostToolUse Task"
-          }
-        ]
-      }
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(npm:*)"
     ]
-  },
-  "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true
   }
 }

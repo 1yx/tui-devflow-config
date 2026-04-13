@@ -21,6 +21,7 @@ Rule:
 | `Ctrl+U` | delete to line start |
 | `Ctrl+K` | delete to line end |
 | `Ctrl+W` | delete previous word |
+| `Ctrl+J` | insert newline |
 | `Alt+B` | move backward by word |
 | `Alt+F` | move forward by word |
 | `Alt+D` | delete next word |
@@ -278,6 +279,12 @@ Prompt
 | `Ctrl+r` | insert register |
 | `Tab` / `BackTab` | next / previous completion |
 | `Enter` | accept |
+
+## Claude Code
+
+| Key | Meaning |
+|---|---|
+| `Ctrl+J` | insert newline |
 
 ## Gemini CLI
 

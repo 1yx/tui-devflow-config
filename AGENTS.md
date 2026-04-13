@@ -16,6 +16,8 @@ This repo manages config for:
 - `git`
 - `worktrunk`
 - `claude`
+- `gemini`
+- `uv`
 
 It uses GNU Stow. Each top-level directory is one stow package.
 
@@ -111,6 +113,7 @@ The agent MUST set the user's chosen `worktree-path` in the repo's `worktrunk/.c
   ~/.config/cmux
   ~/.claude
   ~/Library/Application Support/Claude/claude_desktop_config.json
+  ~/.gemini
   ```
   For each existing path, apply the following logic:
   1. **`.backup/` exists and is up-to-date**: The user already ran `backup_configs.sh`. Safe to delete the original and proceed.
@@ -153,9 +156,13 @@ The agent MUST set the user's chosen `worktree-path` in the repo's `worktrunk/.c
   Note: Project custom keybindings are primarily in `helix/.config/helix/config.toml` and `yazi/.config/yazi/keymap.toml`. Full default keymaps for cmux, Ghostty, Helix, Yazi, LazyGit are best viewed via in-app help/tutorial/command palette.
 - **Deployment**: Execute the Stow commands from the root of this repository (dry-run first to verify):
   ```bash
-  stow -n -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude
-  stow -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude
+  stow -n -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude gemini
+  stow -v --target="$HOME" ghostty helix yazi fish starship lazygit git worktrunk cmux uv claude gemini
   ```
+
+  **Package-specific notes**:
+  - **fish**: `fish_variables` is auto-modified by Fish at runtime (`set -U`). It is NOT tracked in the stow package. The fish package uses file-level symlinks for `config.fish` and `functions/*.fish`, while `fish_variables` remains a standalone local file in `~/.config/fish/`.
+  - **claude**: Manages `settings.json`, `keybindings.json`, `hooks/`, `commands/`, and `skills/` via stow. Runtime data (`sessions/`, `history.jsonl`, `cache/`, etc.) is not tracked.
 
 ### 4. Post-setup & Initialization
 
@@ -203,6 +210,13 @@ This repo pre-configures Claude Code permissions in `claude/.claude/settings.jso
 - Auto-allowed: `git`, `pnpm`, `bun`, `node`, `npx`, `uv`, `openspec`, `specify`, `cmux`, read-only filesystem commands, `WebSearch`/`WebFetch`, MCP tools.
 - Always denied (requires human confirmation): `git push`, `npm`.
 - To modify: edit `permissions.allow` or `permissions.deny` arrays in `claude/.claude/settings.json`.
+
+**Keybindings**
+
+`claude/.claude/keybindings.json` (symlinked to `~/.claude/keybindings.json`) defines custom keybindings for Claude Code. Current custom bindings:
+- `Ctrl+J` → `chat:newline` (insert newline, same as Shift+Enter)
+
+To add or modify keybindings, edit `claude/.claude/keybindings.json`. See `/doctor` to validate.
 
 #### Spec-Driven Development
 The spec tool was installed in §2. Here is the workflow for each:
@@ -272,8 +286,9 @@ XDG_CONFIG_HOME="$(pwd)/worktrunk/.config" wt config show >/dev/null
 # Git（parse project-local git config）
 git config --file "$(pwd)/git/.config/git/config" --list >/dev/null
 
-# Claude settings / hooks
+# Claude settings / hooks / keybindings
 jq empty claude/.claude/settings.json
+jq empty claude/.claude/keybindings.json
 bash -n claude/.claude/hooks/cmux-notify.sh
 
 # uv（confirm available and verify config loads）

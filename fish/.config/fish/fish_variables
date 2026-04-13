@@ -1,4 +1,0 @@
-# This file contains fish universal variable definitions.
-# VERSION: 3.0
-SETUVAR __fish_initialized:4300
-SETUVAR fish_user_paths:/Users/dontaire/\x2elocal/bin\x1e/Applications/Obsidian\x2eapp/Contents/MacOS\x1e/opt/homebrew/opt/coreutils/libexec/gnubin\x1e/Users/dontaire/\x2ebun/bin\x1e/opt/homebrew/opt/mysql\x2dclient/bin\x1e/Users/dontaire/Library/pnpm\x1e/opt/homebrew/bin\x1e/opt/homebrew/sbin

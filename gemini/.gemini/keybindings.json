@@ -1,5 +1,13 @@
 [
   {
+    "command": "-background.toggle",
+    "key": "ctrl+b"
+  },
+  {
+    "command": "-background.kill",
+    "key": "ctrl+k"
+  },
+  {
     "command": "cursor.left",
     "key": "ctrl+b"
   },
