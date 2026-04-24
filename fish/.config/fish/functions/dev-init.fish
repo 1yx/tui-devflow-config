@@ -17,7 +17,7 @@ function dev-init
 
     # Set workspace metadata: title = branch name, status = init stage
     set -l branch (git branch --show-current 2>/dev/null; or echo "main")
-    dev-workspace-meta --title (basename $PWD) --stage init
+    dev-workspace-meta --title "📁 "(basename $PWD) --stage init
 
     echo ""
     echo "Step 1/5 done. Run 'dev specify <name>' to start a change."

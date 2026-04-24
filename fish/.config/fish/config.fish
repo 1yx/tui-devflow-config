@@ -98,4 +98,13 @@ if status --is-interactive
     if command -v wt >/dev/null 2>&1
         wt config shell init fish | source
     end
+
+    # cmux workspace metadata refresh on every prompt
+    if not functions -q __cmux_prompt_base
+        functions --copy fish_prompt __cmux_prompt_base
+        function fish_prompt
+            _cmux_meta_refresh
+            __cmux_prompt_base
+        end
+    end
 end
