@@ -62,6 +62,13 @@ end
 fish_add_path /opt/homebrew/opt/coreutils/libexec/gnubin
 abbr -a timeout gtimeout
 
+# GNU which/indent (g-prefixed → default names via gnubin)
+fish_add_path /opt/homebrew/opt/gnu-which/libexec/gnubin
+fish_add_path /opt/homebrew/opt/gnu-indent/libexec/gnubin
+
+# GNU getopt (keg-only, needs explicit PATH)
+fish_add_path /opt/homebrew/opt/gnu-getopt/bin
+
 # Obsidian
 fish_add_path /Applications/Obsidian.app/Contents/MacOS
 

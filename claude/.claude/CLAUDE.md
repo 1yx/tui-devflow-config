@@ -7,6 +7,20 @@
 - Prefer `fd` over `find` for file search
 - Prefer `jq` over `python3 -c 'import json...'` for JSON processing
 - Prefer `uv` over `pip` for Python package management
+- Prefer `gsed` over `sed` for GNU sed features (in-place editing without backup extension)
+- Prefer `gawk` over `awk` for GNU awk features (strftime, FPAT, gensub, etc.)
+- Prefer `gdate` over `date` for GNU date features (relative dates, iso-8601)
+- Prefer `gstat` over `stat` for GNU stat features (format strings)
+- Prefer `greadlink` over `readlink` for reliable -f canonicalize
+- Prefer `grealpath` over `realpath` for path canonicalization
+- Prefer `gtimeout` over `timeout` for command time-limiting
+- Prefer `gfind` over `find` for GNU find features (but prefer `fd` over both)
+- Prefer `gxargs` over `xargs` for GNU xargs features (-d, -P parallel)
+- Prefer `gtar` over `tar` for GNU tar features (--exclude, --transform)
+- Prefer `ggrep` over `grep` for GNU grep features (-P Perl regex) (but prefer `rg` over both)
+- Prefer `gwhich` over `which` for GNU which features (-a list all matches)
+- Prefer `gindent` over `indent` for GNU indent features
+- Prefer `gnu-getopt` over `getopt` for long option parsing
 
 ## Date and Time
 
@@ -26,4 +40,4 @@
 
 ## Installed Toolchain
 
-Homebrew packages: `fd` `ripgrep` `jq` `coreutils`
+Homebrew packages: `fd` `ripgrep` `jq` `coreutils` `gnu-sed` `gawk` `findutils` `gnu-tar` `grep` `gnu-which` `gnu-indent` `gnu-getopt`
