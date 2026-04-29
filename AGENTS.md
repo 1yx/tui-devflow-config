@@ -36,7 +36,7 @@ When an AI Agent is invoked to set up this environment, it MUST execute the foll
 #### Install the required toolchain using Homebrew:
 ```bash
 # Core TUI tools
-brew install stow helix yazi lazygit fish starship
+brew install stow helix yazi lazygit fish starship fd
 ```
 
 #### Switch to Fish and fix PATH
@@ -178,7 +178,7 @@ Claude hardcodes `~/.claude/` and cannot be changed — the only exception.
 The repo tracks a placeholder template at `git/.config/git/config` (`YOUR_NAME` / `your@email.com`). If these values are still placeholders, the agent **MUST** guide the user through:
 1. Edit `git/.config/git/config` with real name and email
 2. `stow -R -v --target="$HOME" git`
-3. `git update-index --assume-unchanged git/.config/git/config` (prevents personal info from being committed)
+3. `git update-index --skip-worktree git/.config/git/config` (prevents personal info from being committed)
 
 #### Claude Code Configuration
 The agent **MUST** ask the user to choose one of the following provider switching methods:
@@ -315,7 +315,7 @@ Setup is complete. The agent **MUST** now guide the user to:
 3. Start a Claude session inside cmux using `dev *` or `cld *` or `claude`.
 4. Ask Claude about any tool's shortcuts, keybindings, or configuration details (e.g. "show me helix keymap", "what does ⌘D do in cmux", "explain the dev workflow").
 5. Request modifications to fit the user's own preferences — Claude will edit the stow packages and restow as needed.
-6. Before pushing to a remote repository, remind the user to protect sensitive data (API keys, tokens, secrets). Use `git update-index --assume-unchanged <file>` on any file containing real credentials to prevent accidental commits.
+6. Before pushing to a remote repository, remind the user to protect sensitive data (API keys, tokens, secrets). Use `git update-index --skip-worktree <file>` on any file containing real credentials to prevent accidental commits.
 
 #### Keymap & Shortcut Viewing
 Remind the user that `KEYMAP.md` in the project root is the single-page cheatsheet for all tool keybindings and custom overrides. If the user has any questions about shortcuts or keybindings (e.g. "what does ⌘D do in cmux", "show me helix keymap"), they can ask the agent at any time.

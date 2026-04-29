@@ -55,8 +55,17 @@ function cld --argument provider
             set -a env_args ANTHROPIC_DEFAULT_HAIKU_MODEL=minimax/minimax-m2.5:free
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=minimax/minimax-m2.5:free
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=minimax/minimax-m2.5:free
+        case ds
+            set -a env_args ANTHROPIC_BASE_URL=$CLD_DS_URL
+            set -a env_args ANTHROPIC_API_KEY=$CLD_DS_KEY
+            set -a env_args ANTHROPIC_MODEL=deepseek-v4-pro[1m]
+            set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]
+            set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]
+            set -a env_args ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
+            set -a env_args CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
+            set -a env_args CLAUDE_CODE_EFFORT_LEVEL=max
         case '*'
-            echo "Usage: cld <proxy|glm|kimi|qwen|minimax> [claude args...]"
+            echo "Usage: cld <proxy|glm|kimi|qwen|minimax|ds> [claude args...]"
             echo "       cld [claude args...]  (uses \$CLD_DEFAULT_PROVIDER)"
             return 1
     end

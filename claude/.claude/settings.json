@@ -1,31 +1,4 @@
 {
-  "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/cmux-notify.sh PostToolUse Task",
-            "type": "command"
-          }
-        ],
-        "matcher": "Task"
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/cmux-notify.sh Stop",
-            "type": "command"
-          }
-        ],
-        "matcher": ""
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Bash(git:*)",
@@ -39,6 +12,8 @@
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(jq:*)",
       "Bash(tree:*)",
       "Bash(echo:*)",
       "Bash(file:*)",
@@ -53,5 +28,34 @@
       "Bash(git push:*)",
       "Bash(npm:*)"
     ]
-  }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cmux-notify.sh PostToolUse Task"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cmux-notify.sh Stop"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-daltonized"
 }
