@@ -2,10 +2,25 @@
 
 [[mgr.prepend_keymap]]
 on = "e"
-run = 'shell --block "$EDITOR %s"'
-desc = "Open in Helix"
+run = "open"
+desc = "Open file (mdfried for md, Helix otherwise)"
 
 [[mgr.prepend_keymap]]
 on = "E"
 run = 'shell --block "$EDITOR"'  # 打开 Helix 但不传文件
 desc = "Open Helix in current directory"
+
+[[mgr.prepend_keymap]]
+on = "J"
+run = "seek 1"
+desc = "Scroll preview down 1 line"
+
+[[mgr.prepend_keymap]]
+on = "K"
+run = "seek -1"
+desc = "Scroll preview up 1 line"
+
+[[mgr.prepend_keymap]]
+on = "T"
+run = "plugin toggle-pane max-preview"
+desc = "Maximize/restore preview pane"
