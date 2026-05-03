@@ -35,6 +35,8 @@ function cld --argument provider
             set -a env_args ANTHROPIC_DEFAULT_HAIKU_MODEL=glm-5.1
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=glm-5.1
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=glm-5.1
+        # Kimi uses ANTHROPIC_API_KEY per official docs:
+        # https://www.kimi.com/code/docs/third-party-tools/other-coding-agents.html
         case kimi
             set -a env_args ANTHROPIC_BASE_URL=$CLD_KIMI_URL
             set -a env_args ANTHROPIC_API_KEY=$CLD_KIMI_KEY
@@ -44,20 +46,18 @@ function cld --argument provider
         case qwen
             set -a env_args ANTHROPIC_BASE_URL=$CLD_OPENROUTER_URL
             set -a env_args ANTHROPIC_AUTH_TOKEN=$CLD_OPENROUTER_TOKEN
-            set -a env_args ANTHROPIC_API_KEY=
             set -a env_args ANTHROPIC_DEFAULT_HAIKU_MODEL=qwen/qwen3.6-plus:free
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=qwen/qwen3.6-plus:free
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=qwen/qwen3.6-plus:free
         case minimax
             set -a env_args ANTHROPIC_BASE_URL=$CLD_OPENROUTER_URL
             set -a env_args ANTHROPIC_AUTH_TOKEN=$CLD_OPENROUTER_TOKEN
-            set -a env_args ANTHROPIC_API_KEY=
             set -a env_args ANTHROPIC_DEFAULT_HAIKU_MODEL=minimax/minimax-m2.5:free
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=minimax/minimax-m2.5:free
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=minimax/minimax-m2.5:free
         case ds
             set -a env_args ANTHROPIC_BASE_URL=$CLD_DS_URL
-            set -a env_args ANTHROPIC_API_KEY=$CLD_DS_KEY
+            set -a env_args ANTHROPIC_AUTH_TOKEN=$CLD_DS_KEY
             set -a env_args ANTHROPIC_MODEL=deepseek-v4-pro[1m]
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]
@@ -66,7 +66,7 @@ function cld --argument provider
             set -a env_args CLAUDE_CODE_EFFORT_LEVEL=max
         case xm
             set -a env_args ANTHROPIC_BASE_URL=$CLD_XM_URL
-            set -a env_args ANTHROPIC_API_KEY=$CLD_XM_KEY
+            set -a env_args ANTHROPIC_AUTH_TOKEN=$CLD_XM_KEY
             set -a env_args ANTHROPIC_MODEL=mimo-v2.5-pro
             set -a env_args ANTHROPIC_DEFAULT_SONNET_MODEL=mimo-v2.5-pro
             set -a env_args ANTHROPIC_DEFAULT_OPUS_MODEL=mimo-v2.5-pro

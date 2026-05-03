@@ -22,6 +22,10 @@
 - Prefer `gindent` over `indent` for GNU indent features
 - Prefer `gnu-getopt` over `getopt` for long option parsing
 
+> Claude Code uses zsh as its default shell, ignoring `chsh` configuration. Since macOS built-in tools differ from GNU counterparts, GNU tools must be installed via Homebrew and their gnubin PATH configured in `.zprofile`.
+>
+> Homebrew packages: `fd` `ripgrep` `jq` `coreutils` `gnu-sed` `gawk` `findutils` `gnu-tar` `grep` `gnu-which` `gnu-indent` `gnu-getopt`
+
 ## Date and Time
 
 - Run `date` to get the current date/time; do not rely on internal knowledge for temporal facts
@@ -37,7 +41,3 @@
 ## Long-Running Tasks
 
 - For long-running operations, manually retry with exponential backoff: 1 min → 2 min → 4 min
-
-## Installed Toolchain
-
-Homebrew packages: `fd` `ripgrep` `jq` `coreutils` `gnu-sed` `gawk` `findutils` `gnu-tar` `grep` `gnu-which` `gnu-indent` `gnu-getopt`

@@ -7,8 +7,8 @@ desc = "Open file (mdfried for md, Helix otherwise)"
 
 [[mgr.prepend_keymap]]
 on = "E"
-run = 'shell --block "$EDITOR"'  # 打开 Helix 但不传文件
-desc = "Open Helix in current directory"
+run = 'shell --block "$EDITOR %s"'
+desc = "Open in Helix"
 
 [[mgr.prepend_keymap]]
 on = "J"
